@@ -8,6 +8,6 @@ class TodolistFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'Todolist';
+        return 'todo-list';
     }
 }

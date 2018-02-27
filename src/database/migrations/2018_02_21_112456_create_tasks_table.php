@@ -19,6 +19,9 @@ class CreateTasksTable extends Migration
             $table->text('description');
             $table->enum('type', ['public','private']);
             $table->date('date');
+            $table->integer('priority')->default(1);
+            $table->tinyInteger('status_id')->default(1);
+            $table->tinyInteger('done')->default(0);
             $table->timestamps();
         });
     }
