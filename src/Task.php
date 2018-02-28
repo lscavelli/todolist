@@ -4,8 +4,8 @@ namespace Lfgscavelli\Todolist;
 
 class Task
 {
-    public function hello()
+    public function add($a, $b)
     {
-        return "hello tasks";
+        return $a + $b;
     }
 }

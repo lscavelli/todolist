@@ -27,8 +27,10 @@ class TodolistServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('todo-list', function() {
+        $this->app->bind(Task::class, function() {
             return new Task;
         });
+
+        $this->app->alias(Task::class, 'todo-list');
     }
 }
