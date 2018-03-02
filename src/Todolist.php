@@ -2,7 +2,7 @@
 
 namespace Lfgscavelli\Todolist;
 
-class Task
+class Todolist
 {
     public function add($a, $b)
     {
