@@ -28,6 +28,13 @@ class TestCase extends Orchestra
     protected function getEnvironmentSetUp($app)
     {
         $app['config']->set('app.key', '6rE9Nz59bGRbeMATftriyQjrpF7DcOQm');
+        $app['path.base'] = __DIR__ . '/../src';
+        $app['config']->set('database.default', 'testbench');
+        $app['config']->set('database.connections.testbench', array(
+            'driver'   => 'sqlite',
+            'database' => ':memory:',
+            'prefix'   => '',
+        ));
     }
 
     /**

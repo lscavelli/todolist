@@ -1,6 +1,6 @@
 <?php
 
-namespace Lfgscavelli\Todolist\Test;
+namespace Lfgscavelli\Todolist\Test\Unit;
 
 use Lfgscavelli\Todolist\Todolist;
 use Lfgscavelli\Todolist\Test\TestCase;
