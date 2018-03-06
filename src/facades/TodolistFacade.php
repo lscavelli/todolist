@@ -1,6 +1,6 @@
 <?php
 
-namespace Lfgscavelli\Todolist\Facades;
+namespace Lfgscavelli\Todolist\facades;
 
 use Illuminate\Support\Facades\Facade;
 

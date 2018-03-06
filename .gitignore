@@ -1,5 +1,7 @@
 composer.lock
-vendor
+vendor/
 /.idea
 /.vscode
 /.vagrant
+storage/
+bootstrap/

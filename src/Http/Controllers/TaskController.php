@@ -1,6 +1,6 @@
 <?php
 
-namespace Lfgscavelli\Todolist\Controllers;
+namespace Lfgscavelli\Todolist\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

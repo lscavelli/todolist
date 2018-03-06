@@ -5,7 +5,7 @@ namespace Lfgscavelli\Todolist\Test\Unit;
 use Lfgscavelli\Todolist\Todolist;
 use Lfgscavelli\Todolist\Test\TestCase;
 
-class TodolistTest extends TestCase
+class TestTodolist extends TestCase
 {
 
     public function testAddition()
