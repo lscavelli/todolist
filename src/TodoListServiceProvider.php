@@ -4,7 +4,7 @@ namespace Lfgscavelli\Todolist;
 
 use Illuminate\Support\ServiceProvider;
 
-class TodolistServiceProvider extends ServiceProvider
+class TodoListServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap services.
@@ -36,10 +36,10 @@ class TodolistServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(Todolist::class, function() {
-            return new Todolist;
+        $this->app->bind(TodoList::class, function() {
+            return new TodoList;
         });
 
-        $this->app->alias(Todolist::class, 'todo-list');
+        $this->app->alias(TodoList::class, 'todo-list');
     }
 }

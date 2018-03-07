@@ -2,7 +2,7 @@
 
 namespace Lfgscavelli\Todolist;
 
-class Todolist
+class TodoList
 {
     public function hello()
     {

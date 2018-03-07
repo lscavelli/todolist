@@ -12,11 +12,19 @@ return [
     |
     */
 
-    'status_user' => [
-        1   =>  'Attivo',
-        2   =>  'Disattivo',
-        3   =>  'Da confermare',
-        4   =>  'Bandito'
+    'priority' => [
+        1   =>  1,
+        2   =>  2,
+        3   =>  3,
+        4   =>  4,
+        5   =>  5,
+        6   =>  6,
+        7   =>  8,
+        9   =>  9
+    ],
+    'done' => [
+        'Da fare',
+        'Fatto'
     ]
 
 ];

@@ -1,14 +1,20 @@
 <?php
+/*
 Route::get('/hello', function () {
-    return Todolist::hello();
+    return TodoList::hello();
 });
 
 Route::get('/testhello', function () {
     return app('todo-list')->hello();
 });
-
-/*
-Route::group(['namespace' => 'Lfgscavelli\Todolist\Controllers'], function () {
-    Route::get('/admin/tasks', 'TaskController@list');
-});
 */
+
+Route::group([
+        'prefix'=>'admin',
+        'middleware' => ['web', 'auth'],
+        'namespace' => 'Lfgscavelli\Todolist\Http\Controllers'
+    ],
+    function () {
+        Route::resource('/tasks', 'TaskController');
+    }
+);
