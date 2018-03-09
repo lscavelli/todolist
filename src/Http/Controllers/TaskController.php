@@ -64,7 +64,7 @@ class TaskController extends Controller
         $data = $request->all();
         $this->validator($data)->validate();
         $this->repo->create($data);
-        return redirect()->route('tasks')->withSuccess('Task creato correttamente.');
+        return redirect('/admin/tasks')->withSuccess('Task creato correttamente.');
     }
 
     /**
