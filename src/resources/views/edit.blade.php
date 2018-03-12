@@ -21,12 +21,13 @@
                     <!-- /.tab-pane -->
                     <div class="tab-pane active" id="settings">
 
-                        {!! Form::model($task, ['url' => 'admin/tasks','class' => 'form-horizontal']) !!}
+                        {!! Form::model($task, ['url' => url('admin/tasks',$task->id),'class' => 'form-horizontal']) !!}
+                            @if(isset($task->id))@method('PUT')@endif
                             {!! Form::slText('name','Nome') !!}
                             {!! Form::slTextarea('description','Descrizione') !!}
                             {!! Form::slSelect('type','Tipo Task',['public'=>__('Pubblico'),'private'=>__('Privato')]) !!}
                             {!! Form::slSelect('status_id','Stato',config('newportal.status_general')) !!}
-                            @if(is_array(config('todolist.priority'))){!! Form::slSelect('priority','Stato',config('todolist.priority')) !!}@endif
+                            @if(is_array(config('todolist.priority'))){!! Form::slSelect('priority','Priorità',config('todolist.priority')) !!}@endif
                             @if(is_array(config('todolist.done'))){!! Form::slSelect('done','Completamento',config('todolist.done')) !!}@endif
                             {!! Form::slDate('date','Data',$task->date) !!}
                             {!! Form::slSubmit('Salva') !!}
@@ -44,6 +45,3 @@
     <!-- /.row -->
 </section>
 @stop
-
-@yield('dateStyle')
-@yield('dateScript')

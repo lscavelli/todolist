@@ -9,8 +9,12 @@ class Task extends Model
     protected $table = 'tasks';
 
     protected $fillable = array(
-        'name', 'description', 'date', 'type'
+        'name', 'description', 'date', 'type', 'priority', 'status_id', 'done'
     );
+
+    protected $dates = [
+        'date'
+    ];
 
     public function groups()    {
         return $this->belongsToMany('App\Models\Group','tasks_groups');

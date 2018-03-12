@@ -11,6 +11,7 @@
             <div class="box" style="padding-top: 20px;">
                 {!!
                     $list->columns(['id','name'=>__("Nome"),'created_at'=>__("Registrata il")])
+                    ->actions([url('/admin/tasks')=>__('Profilo')])
                     ->customizes('created_at',function($row){
                         return $row['created_at']->format('d/m/Y');
                     })->render()

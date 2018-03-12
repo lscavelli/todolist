@@ -9,6 +9,7 @@ use App\Libraries\listGenerates;
 use Illuminate\Validation\Rule;
 use Validator;
 use Lfgscavelli\Todolist\Models\Task;
+use Carbon\Carbon;
 
 class TaskController extends Controller
 {
@@ -63,6 +64,7 @@ class TaskController extends Controller
     public function store(Request $request)   {
         $data = $request->all();
         $this->validator($data)->validate();
+        $data = $this->iDate($data);
         $this->repo->create($data);
         return redirect('/admin/tasks')->withSuccess('Task creato correttamente.');
     }
@@ -75,7 +77,10 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        //
+        $task = $this->repo->find($id);
+        $pag['nexid'] = $this->repo->next($id);
+        $pag['preid'] = $this->repo->prev($id);
+        return view('todolist::show', compact('task','pag'));
     }
 
     /**
@@ -86,19 +91,25 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        //
+        $task = $this->repo->find($id);
+        return view('todolist::edit', compact('task'));
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param $id
+     * @return mixed
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->all(); $data['id'] = $id;
+        $this->validator($data,true)->validate();
+        $data = $this->iDate($data);
+        if ($this->repo->update($id,$data)) {
+            return redirect('/admin/tasks')->withSuccess('Task modificato correttamente.');
+        }
     }
 
     /**
@@ -109,6 +120,22 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if ($this->repo->delete($id)) {
+            return redirect('/admin/tasks')->withSuccess('Task cancellato correttamente');
+        }
+    }
+
+    /**
+     * converto la tada nel formato per DB
+     * @param array $data
+     * @return array
+     */
+    private function iDate(Array $data) {
+        if (!empty($data['date'])) {
+            $data['date'] = Carbon::createFromFormat('d/m/Y', $data['date']);
+        } else {
+            $data['date'] = null;
+        }
+        return $data;
     }
 }
