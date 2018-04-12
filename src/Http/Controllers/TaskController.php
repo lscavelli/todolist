@@ -10,15 +10,17 @@ use Illuminate\Validation\Rule;
 use Validator;
 use Lfgscavelli\Todolist\Models\Task;
 use Carbon\Carbon;
+use App\Models\Group;
+use App\Models\User;
 
 class TaskController extends Controller
 {
 
-    private $repo;
+    private $rp;
 
     public function __construct(RepositoryInterface $rp)  {
         $this->middleware(['web', 'auth']);
-        $this->repo = $rp->setModel('Lfgscavelli\Todolist\Models\Task')->setSearchFields(['name','description']);
+        $this->rp = $rp->setModel('Lfgscavelli\Todolist\Models\Task')->setSearchFields(['name','description']);
     }
 
     /**
@@ -41,7 +43,7 @@ class TaskController extends Controller
      * @return \Illuminate\Contracts\View\View
      */
     public function index(Request $request, listGenerates $list) {
-        $tasks = $this->repo->paginate($request);
+        $tasks = $this->rp->paginate($request);
         $list->setModel($tasks);
         return view('todolist::list')->with(compact('$tasks','list'));
     }
@@ -65,7 +67,7 @@ class TaskController extends Controller
         $data = $request->all();
         $this->validator($data)->validate();
         $data = $this->iDate($data);
-        $this->repo->create($data);
+        $this->rp->create($data);
         return redirect('/admin/tasks')->withSuccess('Task creato correttamente.');
     }
 
@@ -77,9 +79,9 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        $task = $this->repo->find($id);
-        $pag['nexid'] = $this->repo->next($id);
-        $pag['preid'] = $this->repo->prev($id);
+        $task = $this->rp->find($id);
+        $pag['nexid'] = $this->rp->next($id);
+        $pag['preid'] = $this->rp->prev($id);
         return view('todolist::show', compact('task','pag'));
     }
 
@@ -91,7 +93,7 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        $task = $this->repo->find($id);
+        $task = $this->rp->find($id);
         return view('todolist::edit', compact('task'));
     }
 
@@ -107,7 +109,7 @@ class TaskController extends Controller
         $data = $request->all(); $data['id'] = $id;
         $this->validator($data,true)->validate();
         $data = $this->iDate($data);
-        if ($this->repo->update($id,$data)) {
+        if ($this->rp->update($id,$data)) {
             return redirect('/admin/tasks')->withSuccess('Task modificato correttamente.');
         }
     }
@@ -120,7 +122,7 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        if ($this->repo->delete($id)) {
+        if ($this->rp->delete($id)) {
             return redirect('/admin/tasks')->withSuccess('Task cancellato correttamente');
         }
     }
@@ -137,5 +139,129 @@ class TaskController extends Controller
             $data['date'] = null;
         }
         return $data;
+    }
+
+    /**
+     * Visualizzo la pagina per l'assegnazione dei task ai gruppi
+     * @param $id
+     * @param Request $request
+     * @param listGenerates $list
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function assignGroups($id, Request $request, listGenerates $list) {
+        $task = $this->rp->find($id);
+        $pag['nexid'] = $this->rp->next($id);
+        $pag['preid'] = $this->rp->prev($id);
+
+        // Lista Gruppi a cui è assegnato il task
+        // --------------------------------------
+        $gAss = $this->listGroups($id);
+        $groupsAss = $this->rp->paginateArray($gAss->toArray(),4,$request->page_a,'page_a');
+
+        // Lista Gruppi a cui è possibile assegnare il task
+        // ------------------------------------------------
+        $groupsDis = $this->rp->paginateArray($this->rp->setModel(new Group())->all()->diff($gAss)->toArray(),4,$request->page_b,'page_b');
+        return view('todolist::assignGroupTask', compact('groupsAss','groupsDis','task','pag','list'));
+    }
+
+    /**
+     * Restituisce la lista dei gruppi a cui è assegnato il task
+     * @param $id
+     * @return mixed
+     */
+    public function listGroups($id)  {
+        return $this->rp->find($id)->groups;
+    }
+
+    /**
+     * Assegna uno o più gruppi
+     * @param $id
+     * @param $groups
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function addGroup($id, $groups)  {
+        $task = $this->rp->find($id);
+        $groupsArray = is_array($groups) ? $groups : [$groups];
+        foreach ($groupsArray as $groupId) {
+            $this->rp->attach($task->groups(),$groupId);
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * elimina uno o più gruppi
+     * @param $id
+     * @param $groups
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function delGroup($id, $groups)  {
+        $task = $this->rp->find($id);
+        $groupsArray = is_array($groups) ? $groups : [$groups];
+        foreach ($groupsArray as $groupId) {
+            $this->rp->detach($task->groups(),$groupId);
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Visualizzo la pagina per l'assegnazione dei task agli users
+     * @param $id
+     * @param Request $request
+     * @param listGenerates $list
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function assignUsers($id, Request $request, listGenerates $list) {
+        $task = $this->rp->find($id);
+        $pag['nexid'] = $this->rp->next($id);
+        $pag['preid'] = $this->rp->prev($id);
+
+        // Lista users a cui è assegnato il task
+        // --------------------------------------
+        $uAss = $this->listUsers($id);
+        $usersAss = $this->rp->paginateArray($uAss->toArray(),4,$request->page_a,'page_a');
+
+        // Lista users a cui è possibile assegnare il task
+        // ------------------------------------------------
+        $usersDis = $this->rp->paginateArray($this->rp->setModel(new User())->all()->diff($uAss)->toArray(),4,$request->page_b,'page_b');
+        return view('todolist::assignUserTask', compact('usersAss','usersDis','task','pag','list'));
+    }
+
+    /**
+     * Restituisce la lista degli utenti a cui è assegnato il task
+     * @param $id
+     * @return mixed
+     */
+    public function listUsers($id)  {
+        return $this->rp->find($id)->users;
+    }
+
+    /**
+     * Assegna uno o più users
+     * @param $id
+     * @param $users
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function addUser($id, $users)  {
+        $task = $this->rp->find($id);
+        $usersArray = is_array($users) ? $users : [$users];
+        foreach ($usersArray as $userId) {
+            $this->rp->attach($task->users(),$userId);
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * elimina uno o più users
+     * @param $id
+     * @param $users
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function delUser($id, $users)  {
+        $task = $this->rp->find($id);
+        $usersArray = is_array($users) ? $users : [$users];
+        foreach ($usersArray as $userId) {
+            $this->rp->detach($task->users(),$userId);
+        }
+        return redirect()->back();
     }
 }

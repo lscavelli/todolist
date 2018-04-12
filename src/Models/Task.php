@@ -16,10 +16,18 @@ class Task extends Model
         'date'
     ];
 
+    /**
+     * m-m
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function groups()    {
         return $this->belongsToMany('App\Models\Group','tasks_groups');
     }
 
+    /**
+     * m-m
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function users() {
         return $this->belongsToMany('App\Models\User','tasks_users');
     }
