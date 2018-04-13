@@ -47,10 +47,44 @@
 
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#users" data-toggle="tab" aria-expanded="true">{{ __('Lista Commenti') }}</a></li>
-                    <li><a href="#groups" data-toggle="tab">{{ __('Tag assegnati') }}</a></li>
-                    <li><a href="#permissions" data-toggle="tab">{{ __('Categorie assegnate') }}</a></li>
+                    <li class="active"><a href="#groups" data-toggle="tab" aria-expanded="true">{{ __('Assegnato ai gruppi') }} @if(isset($listGroups))<span class="label label-success">{{$listGroups->total()}}</span>@endif</a></li>
+                    <li><a href="#users" data-toggle="tab">{{ __('Assegnato agli utenti') }} @if(isset($listUsers))<span class="label label-success">{{$listUsers->total()}}</span>@endif</a></li>
                 </ul>
+                <div class="tab-content">
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane active" id="groups">
+                        @if(isset($listGroups))
+                            {!!
+                                $listGroups->columns(['id','name'=>__('Nome'),'azioni'=>__('Azioni')])
+                                ->showAll(false)
+                                ->customizes('azioni', function($row) use($task) {
+                                    if ($task->groups->contains('id',$row['id'])) {
+                                        return "<a href=\"/admin/tasks/". $task->id ."/removeGroup/".$row['id']."\" class=\"btn btn-success btn-xs pull-right\">".__('Cancella')."</a>";
+                                    }
+                                    return "<a href=\"#\" class=\"btn btn-success btn-xs pull-right disabled\">".__('Cancella')."</a>";
+                                })
+                                ->render()
+                            !!}
+                        @endif
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="users">
+                        @if(isset($listUsers))
+                            {!!
+                                $listUsers->columns(['id','nome'=>_('Nome'),'cognome'=>_('Cognome'),'azioni'=>__('Azioni')])
+                                ->showAll(false)
+                                ->customizes('azioni', function($row) use($task) {
+                                    if ($task->users->contains('id',$row['id'])) {
+                                        return "<a href=\"/admin/tasks/". $task->id ."/removeUser/".$row['id']."\" class=\"btn btn-success btn-xs pull-right\">".__('Cancella')."</a>";
+                                    }
+                                    return "<a href=\"#\" class=\"btn btn-success btn-xs pull-right disabled\">".__('Cancella')."</a>";
+                                })
+                                ->render()
+                            !!}
+                        @endif
+                    </div>
+                    <!-- /.tab-pane -->
+                </div>
             </div>
             <!-- /.nav-tabs-custom -->
         </div>

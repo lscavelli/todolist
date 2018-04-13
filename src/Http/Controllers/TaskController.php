@@ -77,12 +77,14 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request, listGenerates $list)
     {
         $task = $this->rp->find($id);
         $pag['nexid'] = $this->rp->next($id);
         $pag['preid'] = $this->rp->prev($id);
-        return view('todolist::show', compact('task','pag'));
+        $listUsers = new listGenerates($this->rp->paginateArray($this->listUsers($id)->toArray(),10,$request->page_a,'page_a'));
+        $listGroups = new listGenerates($this->rp->paginateArray($this->listGroups($id)->toArray(),10,$request->page_c,'page_c'));
+        return view('todolist::show', compact('task','pag', 'listUsers', 'listGroups'));
     }
 
     /**
