@@ -16,6 +16,7 @@
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#settings" data-toggle="tab" aria-expanded="true">{{ __("Dati obbligatori") }}</a></li>
+                    <li><a href="#categorization" data-toggle="tab">{{ __("Categorizzazione") }}</a></li>
                 </ul>
                 <div class="tab-content">
                     <!-- /.tab-pane -->
@@ -26,15 +27,26 @@
                             {!! Form::slText('name','Nome') !!}
                             {!! Form::slTextarea('description','Descrizione') !!}
                             {!! Form::slSelect('type','Tipo Task',['public'=>__('Pubblico'),'private'=>__('Privato')]) !!}
-                            {!! Form::slSelect('status_id','Stato',config('newportal.status_general')) !!}
+                            @if(is_array(config('todolist.stato'))){!! Form::slSelect('status_id','Stato',config('todolist.stato')) !!}@endif
                             @if(is_array(config('todolist.priority'))){!! Form::slSelect('priority','Priorità',config('todolist.priority')) !!}@endif
-                            @if(is_array(config('todolist.done'))){!! Form::slSelect('done','Completamento',config('todolist.done')) !!}@endif
                             {!! Form::slDate('date','Data',$task->date) !!}
                             {!! Form::slSubmit('Salva') !!}
                         {!! Form::close() !!}
 
                     </div>
                     <!-- /.tab-pane -->
+
+                    <div class="tab-pane" id="categorization">
+
+                        {!! Form::model($task, ['url' => url('admin/tasks/categories',$task->id),'class' => 'form-horizontal']) !!}
+                        {!! Form::slText('name','Titolo',null,['disabled'=>'']) !!}
+                        {!! Form::slCategory($vocabularies,$tags,$task) !!}
+                        {!! Form::slSubmit('Salva',['name'=>'saveCategory']) !!}
+                        {!! Form::close() !!}
+
+                    </div>
+                    <!-- /.tab-pane -->
+
                 </div>
                 <!-- /.tab-content -->
             </div>

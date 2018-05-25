@@ -22,5 +22,6 @@ Route::group([
         Route::get('tasks/assignUsers/{task_id}', 'TaskController@assignUsers');
         Route::get('tasks/{task_id}/addUser/{user_id}', 'TaskController@addUser');
         Route::get('tasks/{task_id}/removeUser/{user_id}', 'TaskController@delUser');
+        Route::post('tasks/categories/{task_id}', 'TaskController@saveCategories');
     }
 );

@@ -31,4 +31,20 @@ class Task extends Model
     public function users() {
         return $this->belongsToMany('App\Models\User','tasks_users');
     }
+
+    /**
+     * restituisce i tags assegnati al task
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function tags() {
+        return $this->morphToMany('App\Models\Content\Tag', 'taggable');
+    }
+
+    /**
+     * restituisce le categorie assegnate al task
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function categories() {
+        return $this->morphToMany('App\Models\Content\Category', 'categorized')->withPivot('vocabulary_id');
+    }
 }

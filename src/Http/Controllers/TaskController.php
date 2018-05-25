@@ -12,6 +12,7 @@ use Lfgscavelli\Todolist\Models\Task;
 use Carbon\Carbon;
 use App\Models\Group;
 use App\Models\User;
+use App\Models\Content\Service;
 
 class TaskController extends Controller
 {
@@ -96,7 +97,9 @@ class TaskController extends Controller
     public function edit($id)
     {
         $task = $this->rp->find($id);
-        return view('todolist::edit', compact('task'));
+        $tags = $this->rp->setModel('App\Models\Content\Tag')->pluck();
+        $vocabularies = $this->rp->listVocabularies($task);
+        return view('todolist::edit', compact('task','tags','vocabularies'));
     }
 
     /**
@@ -265,5 +268,10 @@ class TaskController extends Controller
             $this->rp->detach($task->users(),$userId);
         }
         return redirect()->back();
+    }
+
+    public function saveCategories($id) {
+        $this->rp->saveCategories($id);
+        return redirect('admin/tasks')->withSuccess('task aggiornato correttamente');
     }
 }
