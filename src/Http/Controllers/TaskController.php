@@ -274,4 +274,12 @@ class TaskController extends Controller
         $this->rp->saveCategories($id);
         return redirect('admin/tasks')->withSuccess('task aggiornato correttamente');
     }
+
+    public function tasksOfUser() {
+
+        dd('tet');
+        //$user = auth()->user();
+        //$tasks = $user->tasks();
+        //return view('todolist::listForDash')->with(compact('tasks'));
+    }
 }
