@@ -3,6 +3,7 @@
 namespace Lfgscavelli\Todolist;
 
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\RepositoryInterface;
 
 class TodoListServiceProvider extends ServiceProvider
 {
@@ -37,7 +38,7 @@ class TodoListServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(TodoList::class, function() {
-            return new TodoList;
+            return new TodoList(app(RepositoryInterface::class));
         });
 
         $this->app->alias(TodoList::class, 'todo-list');

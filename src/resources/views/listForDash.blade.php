@@ -31,8 +31,8 @@
                 <small class="label label-danger"><i class="fa fa-clock-o"></i> 2 mins</small>
                 <!-- General tools such as edit or delete-->
                 <div class="tools">
-                    <i class="fa fa-edit"></i>
-                    <i class="fa fa-trash-o"></i>
+                    <a href="{{ url('/admin/tasks/'.$task->id.'/edit') }}"><i class="fa fa-edit"></i></a>
+                    <a href="#" class="delete" data-id="{{ $task->id }}"><i class="fa fa-trash-o"></i></a>
                 </div>
             </li>
             @endforeach
@@ -41,7 +41,20 @@
     </div>
     <!-- /.box-body -->
     <div class="box-footer clearfix no-border">
-        <button type="button" class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add Attività</button>
+        <button type="button" class="btn btn-default pull-right add-task"><i class="fa fa-plus"></i> Add task</button>
     </div>
 </div>
 <!-- /.box -->
+@include('ui.confirmdelete')
+@push('scripts')
+    <script>
+        $(".delete").click(function() {
+            $('#confirmdelete').modal('toggle');
+            $('.modal-body p').text("Sei sicuro di voler eliminare l'elemento id "+$(this).data('id'));
+            $('#confirmForm').prop('action', '/admin/tasks/' + $(this).data('id'));
+        });
+        $('.add-task').on('click', function(){
+            window.location = '{{ url('/admin/tasks/create') }}';
+        });
+    </script>
+@endpush

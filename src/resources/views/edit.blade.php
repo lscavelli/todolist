@@ -16,7 +16,7 @@
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#settings" data-toggle="tab" aria-expanded="true">{{ __("Dati obbligatori") }}</a></li>
-                    <li><a href="#categorization" data-toggle="tab">{{ __("Categorizzazione") }}</a></li>
+                    @isset($vocabularies)<li><a href="#categorization" data-toggle="tab">{{ __("Categorizzazione") }}</a></li>@endisset
                 </ul>
                 <div class="tab-content">
                     <!-- /.tab-pane -->
@@ -35,7 +35,7 @@
 
                     </div>
                     <!-- /.tab-pane -->
-
+                    @isset($vocabularies)
                     <div class="tab-pane" id="categorization">
 
                         {!! Form::model($task, ['url' => url('admin/tasks/categories',$task->id),'class' => 'form-horizontal']) !!}
@@ -46,7 +46,7 @@
 
                     </div>
                     <!-- /.tab-pane -->
-
+                    @endisset
                 </div>
                 <!-- /.tab-content -->
             </div>

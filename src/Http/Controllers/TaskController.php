@@ -11,7 +11,6 @@ use Validator;
 use Lfgscavelli\Todolist\Models\Task;
 use Carbon\Carbon;
 use App\Models\Group;
-use App\Models\User;
 use App\Models\Content\Service;
 
 class TaskController extends Controller
@@ -273,13 +272,5 @@ class TaskController extends Controller
     public function saveCategories($id) {
         $this->rp->saveCategories($id);
         return redirect('admin/tasks')->withSuccess('task aggiornato correttamente');
-    }
-
-    public function tasksOfUser() {
-
-        dd('tet');
-        //$user = auth()->user();
-        //$tasks = $user->tasks();
-        //return view('todolist::listForDash')->with(compact('tasks'));
     }
 }
