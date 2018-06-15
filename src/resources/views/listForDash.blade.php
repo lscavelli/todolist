@@ -17,14 +17,14 @@
         <ul class="todo-list ui-sortable">
 
             @foreach($tasks as $task)
-            <li class="" style="">
+            <li class="@if($task->status_id==1){{ 'done' }}@endif" style="">
                 <!-- drag handle -->
                 <span class="handle ui-sortable-handle">
                         <i class="fa fa-ellipsis-v"></i>
                         <i class="fa fa-ellipsis-v"></i>
                       </span>
                 <!-- checkbox -->
-                <input type="checkbox" value="">
+                <input type="checkbox" value="" @if($task->status_id==1){{ 'checked' }}@endif>
                 <!-- todo text -->
                 <span class="text">{{ $task->name }}</span>
                 <!-- Emphasis label -->
