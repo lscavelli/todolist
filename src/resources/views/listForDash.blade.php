@@ -17,18 +17,20 @@
         <ul class="todo-list ui-sortable">
 
             @foreach($tasks as $task)
-            <li class="@if($task->status_id==1){{ 'done' }}@endif" style="">
+            <li class="@if($task->status_id==1){{ 'done' }}@endif" style="" data-item-id="{{ $task->id }}">
                 <!-- drag handle -->
                 <span class="handle ui-sortable-handle">
                         <i class="fa fa-ellipsis-v"></i>
                         <i class="fa fa-ellipsis-v"></i>
                       </span>
                 <!-- checkbox -->
-                <input type="checkbox" value="" @if($task->status_id==1){{ 'checked' }}@endif>
+                <input type="checkbox" value="" @if($task->status_id==1){{ 'checked' }}@endif  data-id="{{ $task->id }}">
                 <!-- todo text -->
-                <span class="text">{{ $task->name }}</span>
+                <span class="text nametask" data-name="{{ $task->name }}">{{ \App\Libraries\sl_Text::sommario($task->name,30 ) }}</span>
+                @foreach($task->categories as $category)
                 <!-- Emphasis label -->
-                <small class="label label-danger"><i class="fa fa-clock-o"></i> 2 mins</small>
+                <small class="label" style="background-color: {{ $category->color }}"><i class="fa fa-clock-o"></i> {{ $category->name }}</small>
+                @endforeach
                 <!-- General tools such as edit or delete-->
                 <div class="tools">
                     <a href="{{ url('/admin/tasks/'.$task->id.'/edit') }}"><i class="fa fa-edit"></i></a>
@@ -55,6 +57,9 @@
         });
         $('.add-task').on('click', function(){
             window.location = '{{ url('/admin/tasks/create') }}';
+        });
+        $('.nametask').on('mouseover', function(){
+            $(this).attr('title', $(this).data('name'));
         });
     </script>
 @endpush

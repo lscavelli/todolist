@@ -12,6 +12,7 @@ use Lfgscavelli\Todolist\Models\Task;
 use Carbon\Carbon;
 use App\Models\Group;
 use App\Models\Content\Service;
+use App\models\User;
 
 class TaskController extends Controller
 {
@@ -272,5 +273,18 @@ class TaskController extends Controller
     public function saveCategories($id) {
         $this->rp->saveCategories($id);
         return redirect('admin/tasks')->withSuccess('task aggiornato correttamente');
+    }
+
+    public function changeState($id, $state) {
+        $data['status_id'] = $state;
+        $this->rp->update($id,$data);
+        return response()->json(['success' => true], 200);
+    }
+
+    public function setOrder(Request $request) {
+        if ($request->has('itemID') && $request->has('afterItemID')) {
+
+        }
+        return response()->json(['success' => true], 200);
     }
 }
