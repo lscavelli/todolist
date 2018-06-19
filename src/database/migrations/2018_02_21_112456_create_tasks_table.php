@@ -22,6 +22,7 @@ class CreateTasksTable extends Migration
             $table->tinyInteger('priority')->default(1);
             $table->tinyInteger('status_id')->default(1);
             $table->tinyInteger('done')->default(0);
+            $table->tinyInteger('position')->default(0);
             $table->timestamps();
         });
     }

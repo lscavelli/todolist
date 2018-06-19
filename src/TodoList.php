@@ -21,7 +21,7 @@ class TodoList
     public function tasksOfUser() {
         $id = auth()->user()->id;
         $user = $this->rp->setModel(User::class)->find($id);
-        $tasks = $user->tasks()->paginate(5);
+        $tasks = $user->tasks()->orderBy('position','ASC')->paginate(5);
         return view('todolist::listForDash')->with(compact('tasks'));
     }
 

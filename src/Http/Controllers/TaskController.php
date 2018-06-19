@@ -13,6 +13,8 @@ use Carbon\Carbon;
 use App\Models\Group;
 use App\Models\Content\Service;
 use App\models\User;
+use App\Libraries\position;
+use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
@@ -282,8 +284,14 @@ class TaskController extends Controller
     }
 
     public function setOrder(Request $request) {
+        $taskPos = 0;
         if ($request->has('itemID') && $request->has('afterItemID')) {
-
+            $taskPos = $this->rp->find($request->itemID)->position;
+            $taskNewPos = $this->rp->find($request->afterItemID)->position+1;
+            $count = $this->rp->count();
+            if ($taskNewPos>$count) $taskNewPos--;
+            //Log::info([$request->itemID,$taskPos,$taskNewPos]);
+            (new position($this->rp))->reorder($request->itemID,$taskPos,$taskNewPos,['type'=>'public']);
         }
         return response()->json(['success' => true], 200);
     }
