@@ -25,5 +25,10 @@ class TodoList
         return view('todolist::listForDash')->with(compact('tasks'));
     }
 
+    public function categories() {
+        $vocabularies = $this->rp->listVocabularies('Lfgscavelli\Todolist\Models\Task');
+        return view('todolist::categories')->with(compact('vocabularies'));
+    }
+
 
 }

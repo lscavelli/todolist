@@ -283,16 +283,8 @@ class TaskController extends Controller
         return response()->json(['success' => true], 200);
     }
 
-    public function setOrder(Request $request) {
-        $taskPos = 0;
-        if ($request->has('itemID') && $request->has('afterItemID')) {
-            $taskPos = $this->rp->find($request->itemID)->position;
-            $taskNewPos = $this->rp->find($request->afterItemID)->position+1;
-            $count = $this->rp->count();
-            if ($taskNewPos>$count) $taskNewPos--;
-            //Log::info([$request->itemID,$taskPos,$taskNewPos]);
-            (new position($this->rp))->reorder($request->itemID,$taskPos,$taskNewPos,['type'=>'public']);
-        }
-        return response()->json(['success' => true], 200);
+
+    public function setOrder() {
+        return (new position($this->rp))->reorderDrag(['type'=>'public']);
     }
 }
