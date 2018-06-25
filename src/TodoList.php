@@ -26,8 +26,20 @@ class TodoList
     }
 
     public function categories() {
-        $vocabularies = $this->rp->listVocabularies('Lfgscavelli\Todolist\Models\Task');
+        $vocabularies = $this->listVocabularies('Lfgscavelli\Todolist\Models\Task');
         return view('todolist::categories')->with(compact('vocabularies'));
+    }
+
+    public function listVocabularies($model) {
+        if (is_string($model)) {
+            $class = $model;
+        } elseif($model instanceof EloquentModel) {
+            $class = get_class($model);
+        } else {
+            return;
+        }
+        $service = $this->rp->setModel('Lfgscavelli\Todolist\Models\Service')->where('class',$class)->firstOrFail();
+        return $service->vocabularies;
     }
 
 

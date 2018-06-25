@@ -16,10 +16,19 @@
                         @if($loop->first)<div class="col-sm-6">@endif
                                 <div class="clearfix">
                                     <span class="pull-left">{{ $category->name . " #".$category->id }}</span>
-                            <small class="pull-right">90%</small>
+                            <small class="pull-right">
+                                <?php
+                                    try{
+                                            $val = (100/count($category->tasks->toArray()))*count($category->tasksClosed->toArray());
+                                    } catch(Exception $e){
+                                            $val = 0;
+                                    }
+                                    echo $val."%";
+                                ?>
+                            </small>
                         </div>
                         <div class="progress xs">
-                            <div class="progress-bar" style="width: 90%; background-color: {{ $category->color or '#00a65a' }};"></div>
+                            <div class="progress-bar" style="width: {{ $val }}%; background-color: {{ $category->color or '#00a65a' }};"></div>
                         </div>
                         @if($loop->index+1 == floor($loop->count/2))</div><div class="col-sm-6">@endif
                         @if($loop->last)</div>@endif
