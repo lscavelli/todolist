@@ -11,6 +11,9 @@ class Category extends CategoryApp
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
     public function tasks() {
-        return $this->morphedByMany('Lfgscavelli\Todolist\Models\Task', 'categorized');
+        return $this->morphedByMany('Lfgscavelli\Todolist\Models\Task', 'categorized')->withCount(['tasks_users'=> function ($query) {
+            $query->where('user_id',auth()->guard()->id);
+        }]);
     }
+
 }

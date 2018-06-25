@@ -14,8 +14,8 @@
                 <div class="row">
                     @foreach($vocabulary->categories as $category)
                         @if($loop->first)<div class="col-sm-6">@endif
-                        <div class="clearfix">
-                            <span class="pull-left">{{ $category->name . " #".$category->id }}</span>
+                                <div class="clearfix">
+                                    <span class="pull-left">{{ $category->name . " #".$category->id }}</span>
                             <small class="pull-right">90%</small>
                         </div>
                         <div class="progress xs">
