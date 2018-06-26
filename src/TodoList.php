@@ -30,6 +30,10 @@ class TodoList
         return view('todolist::categories')->with(compact('vocabularies'));
     }
 
+    public function calendar() {
+        return view('todolist::calendar')->with(compact(''));
+    }
+
     public function listVocabularies($model) {
         if (is_string($model)) {
             $class = $model;

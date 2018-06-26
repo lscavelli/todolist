@@ -47,4 +47,12 @@ class Task extends Model
     public function categories() {
         return $this->morphToMany('App\Models\Content\Category', 'categorized')->withPivot('vocabulary_id');
     }
+
+    public function scopeOpen($query) {
+        return $query->where('status_id','!=' ,1)->where('status_id','!=' ,2);
+    }
+
+    public function scopeIsClosed($query) {
+        return $query->where('status_id',1);
+    }
 }

@@ -9,7 +9,6 @@
         <!-- /.box-body -->
         <div class="box-footer text-black" style="">
 
-
                 @foreach($vocabularies as $vocabulary)
                 <div class="row">
                     @foreach($vocabulary->categories as $category)
@@ -37,20 +36,11 @@
                 <!-- /.row -->
                 @endforeach
 
-
-
         </div>
     </div>
 
 </div>
 <!-- /.box -->
-
-@push('scripts')
-    <script>
-
-    </script>
-@endpush
-
 
 
 
