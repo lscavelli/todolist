@@ -1,5 +1,5 @@
 <div class="box box-solid bg-green-gradient" style="position: relative; left: 0px; top: 0px;">
-    <div class="box-header ui-sortable-handle" style="cursor: move;">
+    <div class="box-header">
         <i class="fa fa-calendar"></i>
 
         <h3 class="box-title">Calendar</h3>

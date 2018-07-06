@@ -1,6 +1,6 @@
 <!-- TO DO List -->
 <div class="box box-success" style="position: relative; left: 0px; top: 0px;">
-    <div class="box-header ui-sortable-handle" style="cursor: move;">
+    <div class="box-header">
         <i class="ion ion-clipboard"></i>
         <h3 class="box-title">List Categories tasks</h3>
     </div>

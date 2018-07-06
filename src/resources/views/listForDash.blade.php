@@ -1,10 +1,8 @@
 <!-- TO DO List -->
 <div class="box box-primary" style="position: relative; left: 0px; top: 0px;">
-    <div class="box-header ui-sortable-handle" style="cursor: move;">
+    <div class="box-header">
         <i class="ion ion-clipboard"></i>
-
         <h3 class="box-title">To Do List</h3>
-
         <div class="box-tools pull-right">
             {{
                 $tasks->appends(array_except(\Request::all(),['_token','page']))->links()

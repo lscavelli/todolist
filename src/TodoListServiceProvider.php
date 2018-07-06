@@ -16,6 +16,7 @@ class TodoListServiceProvider extends ServiceProvider
     {
         $todolist = "lfgscavelli/todolist";
 		if (! $this->app->routesAreCached()) {
+            $this->loadRoutesFrom(__DIR__.'/routes/api.php');
              $this->loadRoutesFrom(__DIR__.'/routes/web.php');
         }
         // load viste
