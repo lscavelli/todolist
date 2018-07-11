@@ -16,8 +16,6 @@ Route::group([
     ],
     function () {
 
-        Route::get('api/tasks/state/{task_id}/{state}', 'TaskController@changeState');
-        Route::get('api/tasks/order', 'TaskController@setOrder');
         Route::resource('tasks','TaskController');
         Route::get('tasks/assignGroups/{task_id}', 'TaskController@assignGroups');
         Route::get('tasks/{task_id}/addGroup/{group_id}', 'TaskController@addGroup');

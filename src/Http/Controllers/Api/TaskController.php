@@ -23,6 +23,8 @@ class TaskController extends Controller
      */
     public function index()
     {
+        // non consente l'aggiunta di metadati che invece vengono
+        // restituiti estendendo una risorsa da Illuminate\Http\Resources\Json\ResourceCollection;
         return TaskResource::collection($this->rp->with('categories')->paginate(25));
     }
 
@@ -33,19 +35,18 @@ class TaskController extends Controller
      */
     public function byDate(Request $request)
     {
+        // non consente l'aggiunta di metadati che invece vengono
+        // restituiti estendendo una risorsa da Illuminate\Http\Resources\Json\ResourceCollection;
+        // per le chiamate new TaskCollection(Task::all());
         $paginate = $this->rp->getModel()->whereBetween('date', [$request->dal, $request->al])->with('categories')->paginate(25);
         return TaskResource::collection($paginate);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+
+    public function changeState($id, $state) {
+        $data['status_id'] = $state;
+        $this->rp->update($id,$data);
+        return response()->json(['success' => true], 200);
     }
 
     /**
