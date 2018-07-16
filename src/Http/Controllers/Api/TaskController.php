@@ -5,6 +5,7 @@ namespace Lfgscavelli\Todolist\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Lfgscavelli\Todolist\Http\Resources\TaskResource;
+use Lfgscavelli\Todolist\Http\Resources\VocabulariesResource;
 use App\Repositories\RepositoryInterface;
 
 class TaskController extends Controller
@@ -42,7 +43,6 @@ class TaskController extends Controller
         return TaskResource::collection($paginate);
     }
 
-
     public function changeState($id, $state) {
         $data['status_id'] = $state;
         $this->rp->update($id,$data);
@@ -50,14 +50,23 @@ class TaskController extends Controller
     }
 
     /**
-     * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function listCategories()
     {
-        //
+        return VocabulariesResource::collection($this->listVocabularies('Lfgscavelli\Todolist\Models\Task'));
+    }
+
+    public function listVocabularies($model) {
+        if (is_string($model)) {
+            $class = $model;
+        } elseif($model instanceof EloquentModel) {
+            $class = get_class($model);
+        } else {
+            return;
+        }
+        $service = $this->rp->setModel('Lfgscavelli\Todolist\Models\Service')->where('class',$class)->firstOrFail();
+        return $service->vocabularies;
     }
 
     /**

@@ -15,6 +15,7 @@ Route::group([
 
         Route::get('bydate', 'TaskController@byDate');
         Route::get('changestate/{task_id}/{status_id}', 'TaskController@changeState');
+        Route::get('categories', 'TaskController@listCategories');
         Route::apiResource('/', 'TaskController');
         Route::get('order', 'TaskController@setOrder');
 
