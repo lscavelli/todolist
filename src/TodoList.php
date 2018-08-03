@@ -46,5 +46,13 @@ class TodoList
         return $service->vocabularies;
     }
 
+    public function setPermissions($name, $slug, $description=null) {
+        return $this->rp->setModel('App\Models\Permission')
+            ->create([
+                'name'          => $name,
+                'slug'          => $slug,
+                'description'   => $description
+            ]);
+    }
 
 }

@@ -5,7 +5,7 @@ namespace Lfgscavelli\Todolist\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\RepositoryInterface;
-use App\Libraries\listGenerates;
+use App\Services\listGenerates;
 use Illuminate\Validation\Rule;
 use Validator;
 use Lfgscavelli\Todolist\Models\Task;
@@ -13,7 +13,7 @@ use Carbon\Carbon;
 use App\Models\Group;
 use App\Models\Content\Service;
 use App\models\User;
-use App\Libraries\position;
+use App\Services\position;
 use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller

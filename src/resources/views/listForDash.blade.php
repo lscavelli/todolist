@@ -24,7 +24,7 @@
                 <!-- checkbox -->
                 <input type="checkbox" value="" @if($task->status_id==1){{ 'checked' }}@endif  data-id="{{ $task->id }}">
                 <!-- todo text -->
-                <span class="text nametask" data-name="{{ $task->name }}">{{ \App\Libraries\sl_Text::sommario($task->name,30 ) }}</span>
+                <span class="text nametask" data-name="{{ $task->name }}">{{ \App\Services\sl_Text::sommario($task->name,30 ) }}</span>
                 @foreach($task->categories as $category)
                 <!-- Emphasis label -->
                 <small class="label" style="background-color: {{ $category->color }}"><i class="fa fa-clock-o"></i> {{ $category->name }}</small>
