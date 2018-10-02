@@ -4,7 +4,7 @@ namespace Lfgscavelli\Todolist\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class VocabulariesResource extends JsonResource
+class CategoriesResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,8 +17,9 @@ class VocabulariesResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'description' => $this->description,
-            'categories' => CategoriesResource::collection($this->categories),
+            'color' => $this->color,
+            'tasks' => $this->tasks,
+            'tasksClosed' => $this->tasksClosed,
         ];
     }
 }
