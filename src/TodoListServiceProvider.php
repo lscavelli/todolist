@@ -45,5 +45,9 @@ class TodoListServiceProvider extends ServiceProvider
         });
 
         $this->app->alias(TodoList::class, 'todo-list');
+
+        $this->app->extend('menu-services', function($service) {
+            return $service+['tasks'=>'/tasks'];
+        });
     }
 }
