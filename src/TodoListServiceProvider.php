@@ -30,7 +30,7 @@ class TodoListServiceProvider extends ServiceProvider
 
         // altro
         $this->publishes([__DIR__ .'/config/todolist.php' => config_path('todolist.php')], 'config');
-        $this->publishes([__DIR__.'/../public' => public_path('vendor/newportal'),], 'np_public');
+        $this->publishes([__DIR__.'/../public/js' => public_path('vendor/'.$todolist.'/js')], 'np_public');
     }
 
     /**

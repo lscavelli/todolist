@@ -18,6 +18,6 @@ Route::group([
         Route::get('categories', 'TaskController@listCategories');
         Route::apiResource('/', 'TaskController');
         Route::get('order', 'TaskController@setOrder');
-
+        Route::get('delete/{task_id}', 'TaskController@destroy');
     }
 );

@@ -1,6 +1,28 @@
 # Newportal-package Todolist
 
-E' usato come punto di partenza per alcuni pacchetti Newportal.
+Usato come punto di partenza per alcuni pacchetti Newportal.
+
+Nel file resources/views/dashboard/dashboard.blade.php inserire quanto segue:
+
+@section('content')
+    ...
+    @if(app()->isAlias('todo-list'))
+        <app-component></app-component>
+    @endif
+    ...
+@endsection
+
+@section('scripts')
+    ...
+	@if(app()->isAlias('todo-list'))
+		<!-- js Calendar -->
+		<script type="text/javascript" src="{{ asset("/vendor/lfgscavelli/todolist/js/np-calendar.min.js") }}"></script>
+	@endif
+	...
+@endsection
+
+
+
 
 Test cases
 ----------

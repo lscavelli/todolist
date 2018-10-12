@@ -89,6 +89,11 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $task = $this->rp->find($id);
+        if ($task->tags()->count()>0) $this->rp->detach($task->tags(), $task->tags()->pluck('id'));
+        if ($task->categories()->count()>0) $this->rp->detach($task->categories(), $task->categories()->pluck('id'));
+        if ($this->rp->delete($id)){
+            return response()->json(['success' => true], 200);
+        }
     }
 }
