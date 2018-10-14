@@ -35,7 +35,8 @@ class TaskController extends Controller
         $filter = 'unique:tasks'; $required = 'required|';
         if ($onUpdate) { $required = ''; $filter = Rule::unique('tasks')->ignore($data['id']);}
         return Validator::make($data, [
-            'name' => 'sometimes|required|min:3|max:255'
+            'name' => 'sometimes|required|min:3|max:255',
+            'date' => 'required|date_format:d/m/Y',
         ]);
     }
 

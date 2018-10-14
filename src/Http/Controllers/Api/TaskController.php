@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Lfgscavelli\Todolist\Http\Resources\TaskResource;
 use Lfgscavelli\Todolist\Http\Resources\VocabulariesResource;
 use App\Repositories\RepositoryInterface;
+//use Illuminate\Support\Facades\Log;
+use Gate;
 
 class TaskController extends Controller
 {
@@ -39,7 +41,14 @@ class TaskController extends Controller
         // non consente l'aggiunta di metadati che invece vengono
         // restituiti estendendo una risorsa da Illuminate\Http\Resources\Json\ResourceCollection;
         // per le chiamate new TaskCollection(Task::all());
-        $paginate = $this->rp->getModel()->whereBetween('date', [$request->dal, $request->al])->with('categories')->paginate(25);
+        $builder = $this->rp->getModel()->whereBetween('date', [$request->dal, $request->al]);
+        // Log::info('data '.$request->dal. " - ".$request->al);
+        if (!auth()->user()->isAdmin()) {
+            $builder = $builder->whereHas('users', function ($query) {
+                $query->where('user_id',auth()->user()->id);
+            });
+        }
+        $paginate = $builder->with('categories')->paginate(25);
         return TaskResource::collection($paginate);
     }
 
@@ -93,6 +102,7 @@ class TaskController extends Controller
         if ($task->tags()->count()>0) $this->rp->detach($task->tags(), $task->tags()->pluck('id'));
         if ($task->categories()->count()>0) $this->rp->detach($task->categories(), $task->categories()->pluck('id'));
         if ($this->rp->delete($id)){
+            //Log::info("DELETE: ".$id);
             return response()->json(['success' => true], 200);
         }
     }

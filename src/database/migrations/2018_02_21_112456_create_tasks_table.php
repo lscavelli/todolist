@@ -23,6 +23,8 @@ class CreateTasksTable extends Migration
             $table->tinyInteger('status_id')->default(1);
             $table->tinyInteger('done')->default(0);
             $table->tinyInteger('position')->default(1);
+            $table->unsignedInteger('user_id')->index();
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }
