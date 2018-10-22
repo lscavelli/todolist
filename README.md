@@ -22,6 +22,12 @@ Nel file resources/views/dashboard/dashboard.blade.php inserire quanto segue:
 @endsection
 
 
+Per l'installazione
+-------------------
+
+composer require lfgscavelli/todolist
+php artisan migrate --seed
+php artisan vendor:publish
 
 
 Test cases

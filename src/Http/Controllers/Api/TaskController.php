@@ -46,7 +46,7 @@ class TaskController extends Controller
         if (!auth()->user()->isAdmin()) {
             $builder = $builder->whereHas('users', function ($query) {
                 $query->where('user_id',auth()->user()->id);
-            });
+            })->orWhere('user_id',auth()->user()->id);
         }
         $paginate = $builder->with('categories')->paginate(25);
         return TaskResource::collection($paginate);

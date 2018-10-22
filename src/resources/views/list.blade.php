@@ -11,7 +11,7 @@
             <div class="box" style="padding-top: 20px;">
                 {!!
                     $list->columns(['id','name'=>__("Nome"),'stato','created_at'=>__("Registrata il")])
-                    ->actions([__('Profilo'),'assignGroups'=>__('Assegna ai gruppi'),'assignUsers'=>__('Assegna agli utenti')])
+                    ->actions([__('Profilo'),'assignGroups'=>[__('Assegna ai gruppi'),'tasks-assign'],'assignUsers'=>[__('Assegna agli utenti'),'tasks-assign']])
                     ->customizes('stato',function($row){
                         return config('todolist.stato')[$row['status_id']];
                     })

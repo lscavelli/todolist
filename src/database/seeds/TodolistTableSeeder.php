@@ -28,5 +28,11 @@ class TodolistTableSeeder extends Seeder
             'class' =>  'Lfgscavelli\Todolist\Models\Task',
             'color' =>  '#f4a142'
         ]);
+
+        Permission::create([
+            'name' => 'Assegna task',
+            'slug' => 'tasks-assign',
+            'description' => 'Permette l\'assegnazione dei task agli utenti e ai gruppi'
+        ]);
     }
 }

@@ -15,6 +15,7 @@ use App\Models\Content\Service;
 use App\models\User;
 use App\Services\position;
 use Illuminate\Support\Facades\Log;
+use Gate;
 
 class TaskController extends Controller
 {
@@ -71,6 +72,7 @@ class TaskController extends Controller
         $data = $request->all();
         $this->validator($data)->validate();
         $data = $this->iDate($data);
+        $data['user_id'] = auth()->user()->id;
         $this->rp->create($data);
         return redirect('/admin/tasks')->withSuccess('Task creato correttamente.');
     }
@@ -161,6 +163,7 @@ class TaskController extends Controller
      */
     public function assignGroups($id, Request $request, listGenerates $list) {
         $task = $this->rp->find($id);
+        if ($this->checkAccess()) return redirect('/admin/tasks')->withErrors('Non hai i diritti di accesso');
         $pag['nexid'] = $this->rp->next($id);
         $pag['preid'] = $this->rp->prev($id);
 
@@ -223,6 +226,7 @@ class TaskController extends Controller
      */
     public function assignUsers($id, Request $request, listGenerates $list) {
         $task = $this->rp->find($id);
+        if ($this->checkAccess()) return redirect('/admin/tasks')->withErrors('Non hai i diritti di accesso');
         $pag['nexid'] = $this->rp->next($id);
         $pag['preid'] = $this->rp->prev($id);
 
@@ -291,4 +295,10 @@ class TaskController extends Controller
     public function setOrder() {
         return (new position($this->rp))->reorderDrag(['type'=>'public']);
     }
+
+    private function checkAccess()
+    {
+        return Gate::denies('tasks-assign');
+    }
+
 }
