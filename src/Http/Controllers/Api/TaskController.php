@@ -72,7 +72,7 @@ class TaskController extends Controller
         } elseif($model instanceof EloquentModel) {
             $class = get_class($model);
         } else {
-            return;
+            return null;
         }
         $service = $this->rp->setModel('Lfgscavelli\Todolist\Models\Service')->where('class',$class)->firstOrFail();
         return $service->vocabularies;
