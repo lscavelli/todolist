@@ -3,7 +3,7 @@
 namespace Lfgscavelli\Todolist\Test;
 
 use Lfgscavelli\Todolist\Facades\TodolistFacade;
-use Lfgscavelli\Todolist\TodolistServiceProvider;
+use Lfgscavelli\Todolist\TodoListServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
@@ -16,7 +16,7 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            TodolistServiceProvider::class,
+            TodoListServiceProvider::class,
         ];
     }
 
