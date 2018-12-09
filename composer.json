@@ -38,7 +38,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Lfgscavelli\\Todolist\\TodolistServiceProvider"
+                "Lfgscavelli\\Todolist\\TodoListServiceProvider"
             ],
             "aliases": {
                 "Todolist": "Lfgscavelli\\Todolist\\Facades\\TodolistFacade"

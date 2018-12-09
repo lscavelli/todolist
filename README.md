@@ -25,7 +25,7 @@ Nel file resources/views/dashboard/dashboard.blade.php inserire quanto segue:
 Per l'installazione
 -------------------
 
-composer require lfgscavelli/todolist
+composer require lfgscavelli/todolist:v1.0.0-alpha1
 php artisan migrate --seed
 php artisan vendor:publish
 
