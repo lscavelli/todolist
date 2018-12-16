@@ -48,6 +48,7 @@ class TaskController extends Controller
      * @return \Illuminate\Contracts\View\View
      */
     public function index(Request $request, listGenerates $list) {
+        //$tasks = $this->rp->getModel()->Filter()->paginate(5);
         $tasks = $this->rp->paginate($request);
         $list->setModel($tasks);
         return view('todolist::list')->with(compact('$tasks','list'));

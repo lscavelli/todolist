@@ -56,4 +56,14 @@ class Task extends Model
     public function scopeIsClosed($query) {
         return $query->where('status_id',1);
     }
+
+    public function scopeFilter($builder)
+    {
+        if (!auth()->user()->isAdmin()) {
+            return $builder->whereHas('users', function ($q) {
+                $q->where('user_id', auth()->user()->id);
+            })->orWhere('user_id', auth()->user()->id);
+        }
+        return $builder;
+    }
 }

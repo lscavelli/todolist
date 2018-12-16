@@ -3,7 +3,7 @@
 Usato come punto di partenza per alcuni pacchetti Newportal.
 
 Nel file resources/views/dashboard/dashboard.blade.php inserire quanto segue:
-
+```php
 @section('content')
     ...
     @if(app()->isAlias('todo-list'))
@@ -20,15 +20,19 @@ Nel file resources/views/dashboard/dashboard.blade.php inserire quanto segue:
 	@endif
 	...
 @endsection
+```
 
+Installazione
+-------------
 
-Per l'installazione
--------------------
-
-composer require lfgscavelli/todolist:v1.0.0-alpha1
+composer require lfgscavelli/todolist:v1.0.0-alpha2
 php artisan migrate --seed
 php artisan vendor:publish
 
+Rimozione
+---------
+
+composer remove lfgscavelli/todolist
 
 Test cases
 ----------
