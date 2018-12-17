@@ -19,7 +19,7 @@
                         <h3 class="box-title">{{ __('Gruppi diponibili') }}</h3>
                     </div>
                     {!!
-                        $list->setModel($groupsDis)
+                        $list->setPagination($groupsDis)
                             ->columns(['id','name'=>__('Nome'),'azioni'])
                             ->showActions(false)
                             ->showAll(false)
@@ -50,7 +50,7 @@
 
                 <div class="box box-default">
                     {!!
-                         $list->setModel($groupsAss)
+                         $list->setPagination($groupsAss)
                             ->columns(['id','name'=>__('Nome'),'azioni'])
                             ->showActions(false)
                             ->showAll(false)

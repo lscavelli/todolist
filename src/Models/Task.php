@@ -62,7 +62,12 @@ class Task extends Model
         if (!auth()->user()->isAdmin()) {
             return $builder->whereHas('users', function ($q) {
                 $q->where('user_id', auth()->user()->id);
-            })->orWhere('user_id', auth()->user()->id);
+            });
+                /*->orWhereHas('groups', function ($q) {
+                $q->where('group_id', function ($q) {
+
+                });
+            });*/
         }
         return $builder;
     }
