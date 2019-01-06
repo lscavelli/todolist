@@ -20,6 +20,7 @@
                     'listMenu'=>[
                         __('Priorità')=>$task->priority,
                         __('Creato il')=>Carbon\Carbon::parse($task->created_at)->format('d/m/Y'),
+                        __('da')=>$task->author->name,
                         __('Modificato il')=>Carbon\Carbon::parse($task->updated_at)->format('d/m/Y')
                     ],
                     __('description')=>$task->description,

@@ -16,15 +16,19 @@ use App\models\User;
 use App\Services\position;
 use Illuminate\Support\Facades\Log;
 use Gate;
+use Lfgscavelli\Todolist\Http\Filters\TaskFilter;
 
 class TaskController extends Controller
 {
 
     private $rp;
+    private $filter;
 
-    public function __construct(RepositoryInterface $rp)  {
+    public function __construct(RepositoryInterface $rp, TaskFilter $filter)  {
         $this->middleware(['web', 'auth']);
         $this->rp = $rp->setModel('Lfgscavelli\Todolist\Models\Task')->setSearchFields(['name','description']);
+        $this->filter = $filter;
+        $this->filter->addCriterion(['assignToMe' => '1']);
     }
 
     /**
@@ -47,13 +51,40 @@ class TaskController extends Controller
      * @param Request $request
      * @return \Illuminate\Contracts\View\View
      */
-    public function index(Request $request, listGenerates $list) {
-        //dd($this->rp->getModel()->Filter()->toSql()); exit;
-        $tasks = $this->rp->getModel()->Filter()->paginate(5);
-        //$tasks = $this->rp->paginate($request);
+    public function reIndex(Request $request, listGenerates $list) {
+        $tasks = $this->rp->paginate($request);
         $list->setPagination($tasks);
         return view('todolist::list')->with(compact('$tasks','list'));
     }
+
+    /**
+     * Visualizza la lista filtrata dei task
+     * @return mixed
+     */
+    public function index() {
+        $this->filter->addCriterion(['assignToMe' => '1','open' => '1']);
+        $assToMeOpen = $this->rp->getModel()->filter($this->filter)->orderby('created_at','desc')->paginate(10, ['*'], 'page_a'); //->get()->toArray()
+
+        $this->filter->addCriterion(['assignToMe' => '1','closed' => '1'],true);
+        $assToMeClosed = $this->rp->getModel()->filter($this->filter)->orderby('created_at','desc')->paginate(10, ['*'], 'page_b'); //->get()->toArray();
+
+        $this->filter->addCriterion(['assignToOther' => '1','open' => '1'],true);
+        $assToOtherOpen = $this->rp->getModel()->filter($this->filter)->orderby('created_at','desc')->paginate(10, ['*'], 'page_c'); //->get()->toArray()
+
+        $this->filter->addCriterion(['assignToOther' => '1','closed' => '1'],true);
+        $assToOtherClosed = $this->rp->getModel()->filter($this->filter)->orderby('created_at','desc')->paginate(10, ['*'], 'page_d'); //->get()->toArray()
+
+        $listToMeOpen = new listGenerates($assToMeOpen);
+        $listToMeClosed = new listGenerates($assToMeClosed);
+        $listToOtherOpen = new listGenerates($assToOtherOpen);
+        $listToOtherClosed = new listGenerates($assToOtherClosed);
+
+        return view('todolist::dash')->with(compact(
+            'listToMeOpen', 'listToMeClosed', 'listToOtherOpen', 'listToOtherClosed'
+            )
+        );
+    }
+
 
     /**
      * Mostra il form per la creazione della pagina
@@ -87,7 +118,7 @@ class TaskController extends Controller
      */
     public function show($id, Request $request, listGenerates $list)
     {
-        $task = $this->rp->find($id);
+        $task = $this->rp->getModel()->findOrFail($id);
         $pag['nexid'] = $this->rp->next($id);
         $pag['preid'] = $this->rp->prev($id);
         $listUsers = new listGenerates($this->rp->paginateArray($this->listUsers($id)->toArray(),10,$request->page_a,'page_a'));
@@ -103,7 +134,7 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        $task = $this->rp->find($id);
+        $task = $this->rp->getModel()->filter($this->filter)->findOrFail($id);
         $tags = $this->rp->setModel('App\Models\Content\Tag')->pluck();
         $vocabularies = $this->rp->listVocabularies($task);
         return view('todolist::edit', compact('task','tags','vocabularies'));
@@ -118,6 +149,7 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->rp->getModel()->filter($this->filter)->findOrFail($id);
         $data = $request->all(); $data['id'] = $id;
         $this->validator($data,true)->validate();
         $data = $this->iDate($data);
@@ -134,7 +166,7 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        $task = $this->rp->find($id);
+        $task = $this->rp->getModel()->filter($this->filter)->findOrFail($id);
         if ($task->tags()->count()>0) $this->rp->detach($task->tags(), $task->tags()->pluck('id'));
         if ($task->categories()->count()>0) $this->rp->detach($task->categories(), $task->categories()->pluck('id'));
         if ($this->rp->delete($id)) {
@@ -291,6 +323,22 @@ class TaskController extends Controller
         $data['status_id'] = $state;
         $this->rp->update($id,$data);
         return response()->json(['success' => true], 200);
+    }
+
+    public function closed($id) {
+        $data['status_id'] = 1;
+        $this->filter->addCriterion(['assignTome' => '1','open' => '1']);
+        $task = $this->rp->getModel()->filter($this->filter)->findOrFail($id);
+        $task->update($data);
+        return redirect('admin/tasks')->withSuccess('task aggiornato correttamente');
+    }
+
+    public function open($id) {
+        $data['status_id'] = 0;
+        $this->filter->addCriterion(['assignTome' => '1','closed' => '1']);
+        $task = $this->rp->getModel()->filter($this->filter)->findOrFail($id);
+        $task->update($data);
+        return redirect('admin/tasks')->withSuccess('task aggiornato correttamente');
     }
 
 

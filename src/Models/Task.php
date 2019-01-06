@@ -2,10 +2,13 @@
 
 namespace Lfgscavelli\Todolist\Models;
 
+use App\Http\Filters\Filterable;
 use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
+    use Filterable;
+
     protected $table = 'tasks';
 
     protected $fillable = array(
@@ -45,30 +48,18 @@ class Task extends Model
      * restituisce le categorie assegnate al task
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function categories() {
+    public function categories()
+    {
         return $this->morphToMany('App\Models\Content\Category', 'categorized')->withPivot('vocabulary_id');
     }
 
-    public function scopeOpen($query) {
-        return $query->where('status_id','!=' ,1)->where('status_id','!=' ,2);
-    }
-
-    public function scopeIsClosed($query) {
-        return $query->where('status_id',1);
-    }
-
-    public function scopeFilter($builder)
+    /**
+     * restituisce l'autore del task
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function author()
     {
-        if (!auth()->user()->isAdmin()) {
-            return $builder->whereHas('users', function ($q) {
-                $q->where('user_id', auth()->user()->id);
-            });
-                /*->orWhereHas('groups', function ($q) {
-                $q->where('group_id', function ($q) {
-
-                });
-            });*/
-        }
-        return $builder;
+        return $this->belongsTo(User::class, 'user_id');
     }
+
 }
