@@ -69,7 +69,7 @@
                                         'assignUsers'=>[__('Assegna agli utenti'),'tasks-assign'],
                                         'closed'=>'Chiudi immediatamente'])
                                     ->actions(function($row) {
-                                        return '<li><a href="'.url('/admin/tasks/'.$row['id'],'/edit#categorization').'>Categorizzazione</a></li>';
+                                        return '<li><a href="'.url('/admin/tasks/'.$row['id'].'/edit').'#categorization">Categorizzazione</a></li>';
                                     })
                                     ->customizes('created_at',function($row){
                                         return $row['created_at']->format('d/m/Y');
