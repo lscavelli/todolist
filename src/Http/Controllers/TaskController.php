@@ -28,6 +28,7 @@ class TaskController extends Controller
         $this->middleware(['web', 'auth']);
         $this->rp = $rp->setModel('Lfgscavelli\Todolist\Models\Task')->setSearchFields(['name','description']);
         $this->filter = $filter;
+        // di default posso modificare i miei task e quelli assegnati a me
         $this->filter->addCriterion(['assignToMe' => '1']);
     }
 
@@ -61,28 +62,28 @@ class TaskController extends Controller
      * Visualizza la lista filtrata dei task
      * @return mixed
      */
-    public function index() {
-        $this->filter->addCriterion(['assignToMe' => '1','open' => '1']);
-        $assToMeOpen = $this->rp->getModel()->filter($this->filter)->orderby('created_at','desc')->paginate(10, ['*'], 'page_a'); //->get()->toArray()
+    public function index($type="assign-to-me-open") {
+        if ($type=="assign-to-me-open") {
+            $filter = ['assignToMe' => '1','open' => '1'];
+        } elseif($type=='assign-to-me-closed') {
+            $filter = ['assignToMe' => '1','closed' => '1'];
+        } elseif($type=='assign-to-other-open') {
+            $filter = ['assignToOther' => '1','open' => '1'];
+        } elseif($type=='assign-to-other-closed') {
+            $filter = ['assignToOther' => '1','closed' => '1'];
+        } elseif($type=='open') {
+            $filter = ['open' => '1'];
+        } elseif($type=='closed') {
+            $filter = ['closed' => '1'];
+        } else {
+            $filter = ['all' => '1'];
+        }
 
-        $this->filter->addCriterion(['assignToMe' => '1','closed' => '1'],true);
-        $assToMeClosed = $this->rp->getModel()->filter($this->filter)->orderby('created_at','desc')->paginate(10, ['*'], 'page_b'); //->get()->toArray();
+        $this->filter->addCriterion($filter);
+        $tasks = $this->rp->getModel()->filter($this->filter)->orderby('created_at','desc')->paginate(20);
 
-        $this->filter->addCriterion(['assignToOther' => '1','open' => '1'],true);
-        $assToOtherOpen = $this->rp->getModel()->filter($this->filter)->orderby('created_at','desc')->paginate(10, ['*'], 'page_c'); //->get()->toArray()
-
-        $this->filter->addCriterion(['assignToOther' => '1','closed' => '1'],true);
-        $assToOtherClosed = $this->rp->getModel()->filter($this->filter)->orderby('created_at','desc')->paginate(10, ['*'], 'page_d'); //->get()->toArray()
-
-        $listToMeOpen = new listGenerates($assToMeOpen);
-        $listToMeClosed = new listGenerates($assToMeClosed);
-        $listToOtherOpen = new listGenerates($assToOtherOpen);
-        $listToOtherClosed = new listGenerates($assToOtherClosed);
-
-        return view('todolist::dash')->with(compact(
-            'listToMeOpen', 'listToMeClosed', 'listToOtherOpen', 'listToOtherClosed'
-            )
-        );
+        $list = new listGenerates($tasks);
+        return view('todolist::listTasks')->with(compact('list'));
     }
 
 
@@ -91,17 +92,21 @@ class TaskController extends Controller
      * @return \Illuminate\Contracts\View\View
      */
     public function create()   {
+        // verifico i permessi di creazione del Task
+        if (Gate::denies('tasks-create')) return redirect('/admin/tasks')->withErrorss('Non hai i permessi per questa funzione.');
         $task = new Task();
         return view('todolist::edit')->with(compact('task'));
     }
 
     /**
-     * Salva l'utente nel database dopo aver validato i dati
+     * Salva il task nel database dopo aver validato i dati
      * @param Request $request
      * @return mixed
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)   {
+        // verifico i permessi di creazione del Task
+        if (Gate::denies('tasks-create')) return redirect('/admin/tasks')->withErrorss('Non hai i permessi per questa funzione.');
         $data = $request->all();
         $this->validator($data)->validate();
         $data = $this->iDate($data);
@@ -118,6 +123,7 @@ class TaskController extends Controller
      */
     public function show($id, Request $request, listGenerates $list)
     {
+        // tutti possono visualizzare i task
         $task = $this->rp->getModel()->findOrFail($id);
         $pag['nexid'] = $this->rp->next($id);
         $pag['preid'] = $this->rp->prev($id);
@@ -135,9 +141,15 @@ class TaskController extends Controller
     public function edit($id)
     {
         $task = $this->rp->getModel()->filter($this->filter)->findOrFail($id);
-        $tags = $this->rp->setModel('App\Models\Content\Tag')->pluck();
+        return view('todolist::edit', compact('task'));
+    }
+
+    public function categorization($id) {
+        $task = $this->rp->getModel()->filter($this->filter)->findOrFail($id);
         $vocabularies = $this->rp->listVocabularies($task);
-        return view('todolist::edit', compact('task','tags','vocabularies'));
+        if(is_null($vocabularies)) return redirect('/admin/vocabularies')->withErrors('Aggiungere vocabolari.');
+        $tags = $this->rp->setModel('App\Models\Content\Tag')->pluck();
+        return view('todolist::editCategorization', compact('task','tags','vocabularies'));
     }
 
     /**
@@ -196,8 +208,7 @@ class TaskController extends Controller
      * @return \Illuminate\Contracts\View\View
      */
     public function assignGroups($id, Request $request, listGenerates $list) {
-        $task = $this->rp->find($id);
-        if ($this->checkAccess()) return redirect('/admin/tasks')->withErrors('Non hai i diritti di accesso');
+        $task = $this->rp->getModel()->filter($this->filter)->findOrFail($id);
         $pag['nexid'] = $this->rp->next($id);
         $pag['preid'] = $this->rp->prev($id);
 
@@ -228,7 +239,7 @@ class TaskController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function addGroup($id, $groups)  {
-        $task = $this->rp->find($id);
+        $task = $this->rp->getModel()->filter($this->filter)->findOrFail($id);
         $groupsArray = is_array($groups) ? $groups : [$groups];
         foreach ($groupsArray as $groupId) {
             $this->rp->attach($task->groups(),$groupId);
@@ -243,7 +254,7 @@ class TaskController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function delGroup($id, $groups)  {
-        $task = $this->rp->find($id);
+        $task = $this->rp->getModel()->filter($this->filter)->findOrFail($id);
         $groupsArray = is_array($groups) ? $groups : [$groups];
         foreach ($groupsArray as $groupId) {
             $this->rp->detach($task->groups(),$groupId);
@@ -259,8 +270,7 @@ class TaskController extends Controller
      * @return \Illuminate\Contracts\View\View
      */
     public function assignUsers($id, Request $request, listGenerates $list) {
-        $task = $this->rp->find($id);
-        if ($this->checkAccess()) return redirect('/admin/tasks')->withErrors('Non hai i diritti di accesso');
+        $task = $this->rp->getModel()->filter($this->filter)->findOrFail($id);
         $pag['nexid'] = $this->rp->next($id);
         $pag['preid'] = $this->rp->prev($id);
 
@@ -291,7 +301,7 @@ class TaskController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function addUser($id, $users)  {
-        $task = $this->rp->find($id);
+        $task = $this->rp->getModel()->filter($this->filter)->findOrFail($id);
         $usersArray = is_array($users) ? $users : [$users];
         foreach ($usersArray as $userId) {
             $this->rp->attach($task->users(),$userId);
@@ -306,7 +316,7 @@ class TaskController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function delUser($id, $users)  {
-        $task = $this->rp->find($id);
+        $task = $this->rp->getModel()->filter($this->filter)->findOrFail($id);
         $usersArray = is_array($users) ? $users : [$users];
         foreach ($usersArray as $userId) {
             $this->rp->detach($task->users(),$userId);
@@ -316,39 +326,41 @@ class TaskController extends Controller
 
     public function saveCategories($id) {
         $this->rp->saveCategories($id);
-        return redirect('admin/tasks')->withSuccess('task aggiornato correttamente');
+        return redirect('admin/tasks/'.$id.'/edit')->withSuccess('Task aggiornato correttamente');
     }
 
     public function changeState($id, $state) {
+        $this->rp->getModel()->filter($this->filter)->findOrFail($id);
         $data['status_id'] = $state;
         $this->rp->update($id,$data);
         return response()->json(['success' => true], 200);
     }
 
     public function closed($id) {
-        $data['status_id'] = 1;
+        $data['status_id'] = 2;
         $this->filter->addCriterion(['assignTome' => '1','open' => '1']);
         $task = $this->rp->getModel()->filter($this->filter)->findOrFail($id);
         $task->update($data);
-        return redirect('admin/tasks')->withSuccess('task aggiornato correttamente');
+        return redirect('admin/tasks')->withSuccess('Task aggiornato correttamente');
     }
 
     public function open($id) {
-        $data['status_id'] = 0;
+        $data['status_id'] = 1;
         $this->filter->addCriterion(['assignTome' => '1','closed' => '1']);
         $task = $this->rp->getModel()->filter($this->filter)->findOrFail($id);
         $task->update($data);
-        return redirect('admin/tasks')->withSuccess('task aggiornato correttamente');
+        return redirect('admin/tasks')->withSuccess('Task aggiornato correttamente');
+    }
+
+    public function listFiles($id) {
+        $task = $this->rp->getModel()->filter($this->filter)->findOrFail($id);
+        $listFiles = new listGenerates($task->files()->paginate(10));
+        return view('todolist::editFile', compact('task','listFiles'));
     }
 
 
     public function setOrder() {
         return (new position($this->rp))->reorderDrag(['type'=>'public']);
-    }
-
-    private function checkAccess()
-    {
-        return Gate::denies('tasks-assign');
     }
 
 }

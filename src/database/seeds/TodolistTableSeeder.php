@@ -34,5 +34,10 @@ class TodolistTableSeeder extends Seeder
             'slug' => 'tasks-assign',
             'description' => 'Permette l\'assegnazione dei task agli utenti e ai gruppi'
         ]);
+        Permission::create([
+            'name' => 'Crea task',
+            'slug' => 'tasks-create',
+            'description' => 'Consene la creazione dei task'
+        ]);
     }
 }

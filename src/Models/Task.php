@@ -4,6 +4,7 @@ namespace Lfgscavelli\Todolist\Models;
 
 use App\Http\Filters\Filterable;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Content\File;
 
 class Task extends Model
 {
@@ -60,6 +61,14 @@ class Task extends Model
     public function author()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * elenco dei file di un task
+     * @return mixed
+     */
+    public function files() {
+        return $this->belongsToMany(File::class);
     }
 
 }

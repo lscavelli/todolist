@@ -12,23 +12,6 @@
 <section class="content">
     @include('ui.messages')
     <div class="row">
-        <div class="col-md-3">
-
-            {!!
-                $composer->boxProfile([
-                    'subTitle' =>$task->slug,
-                    'listMenu'=>[
-                        __('Priorità')=>$task->priority,
-                        __('Creato il')=>Carbon\Carbon::parse($task->created_at)->format('d/m/Y'),
-                        __('da')=>$task->author->name,
-                        __('Modificato il')=>Carbon\Carbon::parse($task->updated_at)->format('d/m/Y')
-                    ],
-                    __('description')=>$task->description,
-                    'urlEdit'=>url(Request::getBasePath().'/admin/tasks/'.$task->id.'/edit')
-                    ])->render()
-             !!}
-
-        </div>
         <!-- /.col -->
         <div class="col-md-9">
 
@@ -90,6 +73,42 @@
             <!-- /.nav-tabs-custom -->
         </div>
         <!-- /.col -->
+
+        <div class="col-md-3">
+
+            <div class="box box-solid collapsed-box">
+                <div class="box-header with-border" style="background-color: #f8f8f8; border-radius: 3px">
+                    <h3 class="box-title">Task menu</h3>
+                    <div class="box-tools">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body no-padding" style="display: none;">
+                    @include('todolist::partial.navigation-edit')
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /. box -->
+
+            {!!
+                $composer->boxProfile([
+                    'title' =>"Dati Task",
+                    'subTitle' =>$task->name,
+                    'listMenu'=>[
+                        __('Priorità')=>$task->priority,
+                        __('Creato il')=>Carbon\Carbon::parse($task->created_at)->format('d/m/Y'),
+                        __('da')=>$task->author->name,
+                        __('Modificato il')=>Carbon\Carbon::parse($task->updated_at)->format('d/m/Y')
+                    ],
+                    __('description')=>$task->description,
+                    'urlEdit'=>url(Request::getBasePath().'/admin/tasks/'.$task->id.'/edit')
+                    ])->render()
+            !!}
+
+
+        </div>
+
     </div>
     <!-- /.row -->
 </section>

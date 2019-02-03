@@ -70,13 +70,16 @@ class TaskFilter extends QueryFilter
     public function open() {
         $this->builder
             ->where(function ($query) {
-                $query->where('status_id','!=' ,1)->where('status_id','!=' ,2);
+                $query->where('status_id',1)->orWhere('status_id','>' ,3);
             });
     }
     public function closed() {
-        $this->builder->where('status_id',1);
+        $this->builder
+            ->where(function ($query) {
+                $query->where('status_id',2);
+            });
     }
     public function sospeso() {
-        $this->builder->where('status_id',2);
+        $this->builder->where('tasks.status_id',3);
     }
 }

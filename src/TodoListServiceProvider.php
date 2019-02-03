@@ -49,5 +49,7 @@ class TodoListServiceProvider extends ServiceProvider
         $this->app->extend('menu-services', function($service) {
             return $service+['tasks'=>'/tasks'];
         });
+
+        $this->app->register(EventServiceProvider::class);
     }
 }

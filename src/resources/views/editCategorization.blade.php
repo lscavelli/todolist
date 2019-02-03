@@ -12,25 +12,19 @@
 <section class="content">
     @include('ui.messages')
     <div class="row">
-
         <div class="col-md-@if(isset($task->id)){{9}}@else{{12}}@endif">
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#settings" data-toggle="tab" aria-expanded="true">{{ __("Dati obbligatori") }}</a></li>
                 </ul>
                 <div class="tab-content">
-                    <!-- tab-pane -->
+                    <!-- /.tab-pane -->
                     <div class="tab-pane active" id="settings">
 
-                        {!! Form::model($task, ['url' => url('admin/tasks',$task->id),'class' => 'form-horizontal']) !!}
-                            @if(isset($task->id))@method('PUT')@endif
-                            {!! Form::slText('name','Nome') !!}
-                            {!! Form::slTextarea('description','Descrizione') !!}
-                            {!! Form::slSelect('type','Tipo Task',['public'=>__('Pubblico'),'private'=>__('Privato')]) !!}
-                            @if(is_array(config('todolist.stato'))){!! Form::slSelect('status_id','Stato',config('todolist.stato')) !!}@endif
-                            @if(is_array(config('todolist.priority'))){!! Form::slSelect('priority','Priorità',config('todolist.priority')) !!}@endif
-                            {!! Form::slDate('date','Data',$task->date ?: Carbon\Carbon::now()) !!}
-                            {!! Form::slSubmit('Salva') !!}
+                        {!! Form::model($task, ['url' => url('admin/tasks/categories',$task->id),'class' => 'form-horizontal']) !!}
+                        {!! Form::slText('name','Titolo',null,['disabled'=>'']) !!}
+                        {!! Form::slCategory($vocabularies,$tags,$task) !!}
+                        {!! Form::slSubmit('Salva',['name'=>'saveCategory']) !!}
                         {!! Form::close() !!}
 
                     </div>
@@ -60,7 +54,6 @@
             <!-- /. box -->
         </div>
         @endif
-
     </div>
     <!-- /.row -->
 </section>
