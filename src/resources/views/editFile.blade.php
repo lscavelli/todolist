@@ -2,7 +2,7 @@
 
 @section('breadcrumb')
     {!! $breadcrumb->add(__("Task"),'/admin/tasks')->add(__("Aggiorna task"))
-        ->setTcrumb($task->name)
+        ->setTcrumb($task->name." - (".$task->id.")")
         ->render() !!}
 @stop
 
@@ -104,8 +104,8 @@
             var width = 1080;
             var top =  (screen.height/2)-(height/2) - 100;
             var left = (screen.width/2)-(width/2);
-            {{ session()->forget('task') }}
-            var win = window.open('/lfm?type='+$(this).attr('href')+'&task='+'{{ $task->id }}', '', 'width='+width+',height='+height+',top='+top+',left='+left);
+            {{ session()->forget(['restype','resvalue']) }}
+            var win = window.open('/lfm?type='+$(this).attr('href')+'&restype=tasks&resvalue='+'{{ $task->id }}', '', 'width='+width+',height='+height+',top='+top+',left='+left);
 
             var timer = setInterval(function() {
                 if(win.closed) {

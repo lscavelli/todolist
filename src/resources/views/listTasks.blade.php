@@ -15,13 +15,12 @@
                         $list->columns(['id','name'=>__("Nome"),'created_at'=>__("Creato il"),'status_id'=>__('Stato'),'author'])
                         ->setActionsUrl('/admin/tasks')
                         ->actions([__('Profilo'),
+                            'files'=>'Carica file',
                             'assignGroups'=>[__('Assegna ai gruppi'),'tasks-assign'],
                             'assignUsers'=>[__('Assegna agli utenti'),'tasks-assign'],
                             'closed'=>'Chiudi immediatamente',
-                            'open'=>'Riapri adesso'])
-                        ->actions(function($row) {
-                            return '<li><a href="'.url('/admin/tasks/'.$row['id'].'/edit').'">Categorizzazione</a></li>';
-                        })
+                            'open'=>'Riapri adesso',
+                            'categorization'=>'Categorizzazione'])
                         ->customizes('created_at',function($row){
                             return $row['created_at']->format('d/m/Y');
                         })

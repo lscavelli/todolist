@@ -53,7 +53,7 @@ return [
     // Ex: The private folder of user will be named as the user id.
     'user_folder_name'         => UniSharp\LaravelFilemanager\Handlers\ConfigHandler::class,
 
-    'shared_folder_name'       => Lfgscavelli\Todolist\Handlers\LfmConfigHandler::class, //'shares',
+    'shared_folder_name'       => App\Handlers\LfmConfigHandler::class, //'shares',
 
     'thumb_folder_name'        => 'thumbs',
 

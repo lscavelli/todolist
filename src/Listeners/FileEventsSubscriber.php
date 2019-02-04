@@ -40,8 +40,8 @@ class FileEventsSubscriber {
      */
     public function onImageWasUploaded(ImageWasUploaded $event)
     {
-        if (session()->has('task')) {
-            $task = $this->rp->where('id',session()->get('task'))->first();
+        if (session()->has('tasks')) {
+            $task = $this->rp->where('id',session()->get('tasks'))->first();
             $filePath = str_replace($this->storage, "", $event->path());
             $file = $this->rp->setModel(File::class)
                 ->where('path', $this->getDirname($filePath))
@@ -58,7 +58,7 @@ class FileEventsSubscriber {
      */
     public function subscribe($events)
     {
-        $class = 'Lfgscavelli\Todoliat\Listeners\FileEventsSubscriber';
+        $class = 'Lfgscavelli\Todolist\Listeners\FileEventsSubscriber';
         $events->listen(ImageWasUploaded::class, "{$class}@onImageWasUploaded");
         $events->listen(ImageIsUploading::class, "{$class}@onImageIsUploading");
     }
