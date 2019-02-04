@@ -11,15 +11,14 @@ class Category extends CategoryApp
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
     public function tasksClosed() {
-        return $this->morphedByMany('Lfgscavelli\Todolist\Models\Task', 'categorized')->where('status_id',1)->whereHas('users', function ($query) {
-            $query->where('user_id',auth()->user()->id);
-        });
+        //return $this->morphedByMany('Lfgscavelli\Todolist\Models\Task', 'categorized')->where('status_id',2)->whereHas('users', function ($query) {
+        //    $query->where('user_id',auth()->user()->id);
+        //});
+        return $this->morphedByMany('Lfgscavelli\Todolist\Models\Task', 'categorized')->where('status_id',2);
     }
 
     public function tasks() {
-        return $this->morphedByMany('Lfgscavelli\Todolist\Models\Task', 'categorized')->whereHas('users', function ($query) {
-            $query->where('user_id',auth()->user()->id);
-        });
+        return $this->morphedByMany('Lfgscavelli\Todolist\Models\Task', 'categorized');
     }
 
 }

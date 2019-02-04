@@ -28,6 +28,7 @@ class TaskController extends Controller
     {
         // non consente l'aggiunta di metadati che invece vengono
         // restituiti estendendo una risorsa da Illuminate\Http\Resources\Json\ResourceCollection;
+
         return TaskResource::collection($this->rp->with('categories')->paginate(25));
     }
 
