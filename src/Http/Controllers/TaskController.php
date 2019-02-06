@@ -62,7 +62,7 @@ class TaskController extends Controller
      * Visualizza la lista filtrata dei task
      * @return mixed
      */
-    public function index($type="assign-to-me-open") {
+    public function index($type="assign-to-me-open", Request $request) {
         if ($type=="assign-to-me-open") {
             $filter = ['assignToMe' => '1','open' => '1'];
         } elseif($type=='assign-to-me-closed') {
@@ -78,6 +78,7 @@ class TaskController extends Controller
         } else {
             $filter = ['all' => '1'];
         }
+        $filter['categories'] = 1;
 
         $this->filter->addCriterion($filter);
         $tasks = $this->rp->getModel()->filter($this->filter)->orderby('created_at','desc')->paginate(20);
@@ -128,8 +129,9 @@ class TaskController extends Controller
         $pag['nexid'] = $this->rp->next($id);
         $pag['preid'] = $this->rp->prev($id);
         $listUsers = new listGenerates($this->rp->paginateArray($this->listUsers($id)->toArray(),10,$request->page_a,'page_a'));
-        $listGroups = new listGenerates($this->rp->paginateArray($this->listGroups($id)->toArray(),10,$request->page_c,'page_c'));
-        return view('todolist::show', compact('task','pag', 'listUsers', 'listGroups'));
+        $listGroups = new listGenerates($this->rp->paginateArray($this->listGroups($id)->toArray(),10,$request->page_b,'page_b'));
+        $comments = new listGenerates($this->rp->paginateArray($task->comments->toArray(),10,$request->page_c,'page_c'));
+        return view('todolist::show', compact('task','pag', 'listUsers', 'listGroups','comments'));
     }
 
     /**

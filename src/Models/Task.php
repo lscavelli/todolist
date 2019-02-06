@@ -71,4 +71,12 @@ class Task extends Model
         return $this->belongsToMany(File::class);
     }
 
+    /**
+     * restituisce i commenti associati al Task
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function comments() {
+        return $this->morphMany('App\Models\Content\Comment','commentable');
+    }
+
 }

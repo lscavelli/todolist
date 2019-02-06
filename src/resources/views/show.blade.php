@@ -29,14 +29,70 @@
                     ])->render()
              !!}
 
+            <div class="box box-widget">
+                <div class="box-header with-border">
+                    <div class="user-block">
+                        <img class="img-circle" src="{{ $task->author->getAvatar() }}" alt="{{ $task->author->name }}">
+                        <span class="username"><a href="/admin/users/profile/{{ $task->author->id }}">{{ $task->author->name }}</a></span>
+                        <span class="description">Postato il - {{ Carbon\Carbon::parse($task->created_at)->format('d/m/Y') }} @if($task->created_at!=$task->updated_at) - Modificato il {{ Carbon\Carbon::parse($task->updated_at)->format('d/m/Y') }}@endif</span>
+                    </div>
+                    <!-- /.user-block -->
+                    <div class="box-tools">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                    <!-- /.box-tools -->
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <!-- post text -->
+                    <div class="col-md-9">
+                        {{ $task->description }}
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="col-md-12">
+                        @foreach($task->categories as $category)
+                            <a href="/admin/tasks/list/all?category={{ $category->id }}" style="padding-right: 10px">#{{ $category->name }}</a>
+                        @endforeach
+                        @foreach($task->tags as $tag)
+                            <a href="/admin/tasks/list/all?tag={{ $tag->id }}" style="padding-right: 10px">#{{ $tag->name }}</a>
+                        @endforeach
+                    </div>
+                </div>
+                <!-- /.box-footer -->
+            </div>
+
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#groups" data-toggle="tab" aria-expanded="true">{{ __('Assegnato ai gruppi') }} @if(isset($listGroups))<span class="label label-success">{{$listGroups->total()}}</span>@endif</a></li>
+                    <li class="active"><a href="#comments" data-toggle="tab">{{ __('Commenti') }} @if(isset($comments))<span class="label label-success">{{$comments->total()}}</span>@endif</a></li>
+                    <li><a href="#files" data-toggle="tab">{{ __('Lista dei file') }} @if(isset($listFile))<span class="label label-success">{{$listFile->total()}}</span>@endif</a></li>
+                    <li><a href="#groups" data-toggle="tab" aria-expanded="true">{{ __('Assegnato ai gruppi') }} @if(isset($listGroups))<span class="label label-success">{{$listGroups->total()}}</span>@endif</a></li>
                     <li><a href="#users" data-toggle="tab">{{ __('Assegnato agli utenti') }} @if(isset($listUsers))<span class="label label-success">{{$listUsers->total()}}</span>@endif</a></li>
                 </ul>
                 <div class="tab-content">
                     <!-- /.tab-pane -->
-                    <div class="tab-pane active" id="groups">
+                    <div class="tab-pane active" id="comments">
+                        @if(isset($comments))
+                            {!!
+                                $comments->columns(['id','name'=>__('Nome'),'azioni'=>__('Azioni')])
+                                ->setActionsUrl('\admin\comments\todolist')
+                                ->render()
+                            !!}
+                        @endif
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="files">
+                        @if(isset($listFile))
+                            {!!
+                                $listFile->columns(['id','name'=>__('Nome'),'azioni'=>__('Azioni')])
+                                ->render()
+                            !!}
+                        @endif
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="groups">
                         @if(isset($listGroups))
                             {!!
                                 $listGroups->columns(['id','name'=>__('Nome'),'azioni'=>__('Azioni')])
@@ -67,7 +123,7 @@
                             !!}
                         @endif
                     </div>
-                    <!-- /.tab-pane -->
+
                 </div>
             </div>
             <!-- /.nav-tabs-custom -->
@@ -90,21 +146,6 @@
                 <!-- /.box-body -->
             </div>
             <!-- /. box -->
-
-            {!!
-                $composer->boxProfile([
-                    'title' =>"Dati Task",
-                    'subTitle' =>$task->name,
-                    'listMenu'=>[
-                        __('Priorità')=>$task->priority,
-                        __('Creato il')=>Carbon\Carbon::parse($task->created_at)->format('d/m/Y'),
-                        __('da')=>$task->author->name,
-                        __('Modificato il')=>Carbon\Carbon::parse($task->updated_at)->format('d/m/Y')
-                    ],
-                    __('description')=>$task->description,
-                    'urlEdit'=>url(Request::getBasePath().'/admin/tasks/'.$task->id.'/edit')
-                    ])->render()
-            !!}
 
 
         </div>

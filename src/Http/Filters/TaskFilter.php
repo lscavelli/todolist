@@ -82,4 +82,32 @@ class TaskFilter extends QueryFilter
     public function sospeso() {
         $this->builder->where('tasks.status_id',3);
     }
+
+    public function categories() {
+
+        if (request()->has('tag')) {
+            $tags = ['tags'=>['tag'=>request()->tag]];
+            $this->builder
+                ->where(function ($query) use ($tags) {
+                    foreach ($tags as $tag) {
+                        $query->whereHas('tags', function ($q) use ($tag) {
+                            $q->where('tag_id', '=', $tag['tag']);
+                        });
+                    }
+                });
+        }
+
+        if (request()->has('category')) {
+            $categories = ['categories'=>['category'=>request()->category]];
+            $this->builder
+                ->where(function ($query) use ($categories) {
+                    foreach ($categories as $category) {
+                        $query->whereHas('categories', function ($q) use ($category) {
+                            $q->where('category_id', $category['category']);
+                        });
+                    }
+                });
+        }
+
+    }
 }
