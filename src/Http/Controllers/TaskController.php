@@ -122,7 +122,7 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id, Request $request, listGenerates $list)
+    public function show($id, Request $request)
     {
         // tutti possono visualizzare i task
         $task = $this->rp->getModel()->findOrFail($id);
@@ -130,8 +130,9 @@ class TaskController extends Controller
         $pag['preid'] = $this->rp->prev($id);
         $listUsers = new listGenerates($this->rp->paginateArray($this->listUsers($id)->toArray(),10,$request->page_a,'page_a'));
         $listGroups = new listGenerates($this->rp->paginateArray($this->listGroups($id)->toArray(),10,$request->page_b,'page_b'));
-        $comments = new listGenerates($this->rp->paginateArray($task->comments->toArray(),10,$request->page_c,'page_c'));
-        return view('todolist::show', compact('task','pag', 'listUsers', 'listGroups','comments'));
+        $comments = new listGenerates($task->comments()->paginate(10,['*'],'page_c'));
+        $listFile = new listGenerates($task->files()->paginate(10, ['*'], 'page_d'));
+        return view('todolist::show', compact('task','pag', 'listUsers', 'listGroups','comments','listFile'));
     }
 
     /**

@@ -33,7 +33,7 @@
                 <div class="box-header with-border">
                     <div class="user-block">
                         <img class="img-circle" src="{{ $task->author->getAvatar() }}" alt="{{ $task->author->name }}">
-                        <span class="username"><a href="/admin/users/profile/{{ $task->author->id }}">{{ $task->author->name }}</a></span>
+                        <span class="username"><a href="{{ url('admin/users',$task->author->id) }}">{{ $task->author->name }}</a></span>
                         <span class="description">Postato il - {{ Carbon\Carbon::parse($task->created_at)->format('d/m/Y') }} @if($task->created_at!=$task->updated_at) - Modificato il {{ Carbon\Carbon::parse($task->updated_at)->format('d/m/Y') }}@endif</span>
                     </div>
                     <!-- /.user-block -->
@@ -74,10 +74,12 @@
                 <div class="tab-content">
                     <!-- /.tab-pane -->
                     <div class="tab-pane active" id="comments">
+                        <?php $page = request()->segments(); $page = end($page); ?>
                         @if(isset($comments))
                             {!!
-                                $comments->columns(['id','name'=>__('Nome'),'azioni'=>__('Azioni')])
-                                ->setActionsUrl('\admin\comments\todolist')
+                                $comments->columns(['id','name'=>__('Nome')])
+                                ->setColorButton('default')
+                                ->setActionsUrl("\\admin\\comments\\todolist\\$page")
                                 ->render()
                             !!}
                         @endif
@@ -86,9 +88,39 @@
                     <div class="tab-pane" id="files">
                         @if(isset($listFile))
                             {!!
-                                $listFile->columns(['id','name'=>__('Nome'),'azioni'=>__('Azioni')])
-                                ->render()
-                            !!}
+                                $listFile->columns(['id'=>'Id','thumb'=>__('Anteprima'),'name'=>'Titolo','status_id'=>__('Stato'),'created_at'=>__('Creato il')])
+                                ->addSplitButtons([
+                                   'file'=>'Nuovo file',
+                                   'image'=>'Nuova immagine',
+                                ],false)
+                                ->setColorButton('default')
+                                ->actions(function($row) {
+                                   return '
+                                   <li><a href="'.url('/admin/files/'.$row['id'].'/edit').'">Edita</a></li>
+                                   <li><a href="#" class="delete" data-id="'.$row['id'].'">Delete</a></li>';
+                                },false)
+                                ->setUrlDelete('/admin/files')
+                                ->sortFields(['id','name','file_name'])
+                                ->customizes('created_at',function($row){
+                                   return $row['created_at']->format('d/m/Y');
+                                })
+                                ->customizes('status_id',function($row){
+                                   return config('newportal.status_general')[$row['status_id']];
+                                })
+                                ->customizes('name',function($row){
+                                   return Html::link(url("/admin/files/view",$row['id']), $row['name'], array('title' => $row['name']), true);
+                                })
+                                ->customizes('thumb',function($row){
+                                   $file = "/".config('lfm.thumb_folder_name')."/".$row['file_name'];
+                                   $pathFile = $row->getPath().$file;
+                                   if($row->isImage() && file_exists($pathFile)) {
+                                       return '<div style="text-align:center"><img src=\''.asset("storage/".$row['path'].$file).'\' alt=\''.$row['name'].'\' style="width: 100%; max-width: 45px; height: auto; border-radius: 50%;"></div>';
+                                   } else {
+                                       return '<div style="text-align:center"><i class="fa '.$row->getIcon() .' fa-3x"></i></div>';
+                                   }
+                                })->render()
+                           !!}
+
                         @endif
                     </div>
                     <!-- /.tab-pane -->
@@ -97,6 +129,7 @@
                             {!!
                                 $listGroups->columns(['id','name'=>__('Nome'),'azioni'=>__('Azioni')])
                                 ->showAll(false)
+                                ->setColorButton('default')
                                 ->customizes('azioni', function($row) use($task) {
                                     if ($task->groups->contains('id',$row['id'])) {
                                         return "<a href=\"/admin/tasks/". $task->id ."/removeGroup/".$row['id']."\" class=\"btn btn-success btn-xs pull-right\">".__('Cancella')."</a>";
@@ -113,6 +146,7 @@
                             {!!
                                 $listUsers->columns(['id','nome'=>_('Nome'),'cognome'=>_('Cognome'),'azioni'=>__('Azioni')])
                                 ->showAll(false)
+                                ->setColorButton('default')
                                 ->customizes('azioni', function($row) use($task) {
                                     if ($task->users->contains('id',$row['id'])) {
                                         return "<a href=\"/admin/tasks/". $task->id ."/removeUser/".$row['id']."\" class=\"btn btn-success btn-xs pull-right\">".__('Cancella')."</a>";
@@ -133,11 +167,10 @@
         <div class="col-md-3">
 
             <div class="box box-solid collapsed-box">
-                <div class="box-header with-border" style="background-color: #f8f8f8; border-radius: 3px">
+                <div class="box-header with-border bg-green-gradient" style="border-radius: 3px">
                     <h3 class="box-title">Task menu</h3>
-                    <div class="box-tools">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                        </button>
+                    <div class="box-tools ">
+                        <button type="button" class="btn btn-success" data-widget="collapse"><i class="fa fa-plus"></i></button>
                     </div>
                 </div>
                 <div class="box-body no-padding" style="display: none;">

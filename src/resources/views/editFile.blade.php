@@ -27,6 +27,7 @@
                                 'file'=>'Nuovo file',
                                 'image'=>'Nuova immagine',
                             ],false)
+                            ->setColorButton('default')
                             ->actions(function($row) {
                                 return '
                                 <li><a href="'.url('/admin/files/'.$row['id'].'/edit').'">Edita</a></li>

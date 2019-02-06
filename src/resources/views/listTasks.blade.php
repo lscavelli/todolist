@@ -13,13 +13,18 @@
                 {!!
                     $list->columns(['id','name'=>__("Nome"),'created_at'=>__("Creato il"),'status_id'=>__('Stato'),'author'])
                     ->setActionsUrl('/admin/tasks')
+                    ->setColorButton('default')
                     ->actions([__('Profilo'),
                         'files'=>'Carica file',
                         'assignGroups'=>[__('Assegna ai gruppi'),'tasks-assign'],
                         'assignUsers'=>[__('Assegna agli utenti'),'tasks-assign'],
                         'closed'=>'Chiudi immediatamente',
                         'open'=>'Riapri adesso',
-                        'categorization'=>'Categorizzazione'])
+                        'categorization'=>'Categorizzazione',
+                        'comments'=>'Commenti'])
+                    ->customizes('name',function($row){
+                        return link_to(url('admin\tasks',$row->id), $row->name);
+                    })
                     ->customizes('created_at',function($row){
                         return $row['created_at']->format('d/m/Y');
                     })
