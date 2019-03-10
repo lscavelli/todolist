@@ -15,7 +15,11 @@ Route::group([
         'namespace' => 'Lfgscavelli\Todolist\Http\Controllers'
     ],
     function () {
+
+        Route::get('tasks/comments/{task_id}/create','CommentController@create');
+
         Route::get('tasks/list/{type?}', 'TaskController@index');
+        Route::view('tasks/calendar', 'todolist::calendarAngular');
         Route::resource('tasks','TaskController');
         Route::get('tasks/categorization/{task_id}', 'TaskController@Categorization');
         Route::get('tasks/assignUsers/{task_id}', 'TaskController@assignUsers');

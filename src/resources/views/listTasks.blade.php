@@ -40,7 +40,6 @@
                 !!}
 
             </div>
-            <app-component></app-component>
         </div>
 
         <div class="col-md-3">
@@ -61,13 +60,13 @@
 
             <div class="small-box bg-green">
                 <div class="inner">
-                    <h3>53<sup style="font-size: 20px">%</sup></h3>
-                    <p>Task Calendar</p>
+                    <h3>100%</h3>
+                    <p>Task Calendar - Categories</p>
                 </div>
                 <div class="icon">
                     <i class="fa fa-users"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="/admin/tasks/calendar" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
 
@@ -78,8 +77,4 @@
 @endpush
 
 @push('scripts')
-        <!-- js Calendar -->
-        <script type="text/javascript" src="{{ asset("/vendor/lfgscavelli/todolist/js/runtime.js") }}"></script>
-        <script type="text/javascript" src="{{ asset("/vendor/lfgscavelli/todolist/js/polyfills.js") }}"></script>
-        <script type="text/javascript" src="{{ asset("/vendor/lfgscavelli/todolist/js/main.js") }}"></script>
 @endpush

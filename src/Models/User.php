@@ -11,6 +11,6 @@ class User extends UserApp
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function tasks() {
-        return $this->belongsToMany('Lfgscavelli\Todolist\Models\Task','tasks_users');
+        return $this->belongsToMany(Task::class,'task_user');
     }
 }

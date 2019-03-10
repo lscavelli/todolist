@@ -74,12 +74,11 @@
                 <div class="tab-content">
                     <!-- /.tab-pane -->
                     <div class="tab-pane active" id="comments">
-                        <?php $page = request()->segments(); $page = end($page); ?>
                         @if(isset($comments))
                             {!!
                                 $comments->columns(['id','name'=>__('Nome')])
                                 ->setColorButton('default')
-                                ->setActionsUrl("\\admin\\comments\\todolist\\$page")
+                                ->setActionsUrl("admin\\tasks\\comments\\".$task->id)
                                 ->render()
                             !!}
                         @endif
@@ -168,13 +167,44 @@
 
             <div class="box box-solid collapsed-box">
                 <div class="box-header with-border bg-green-gradient" style="border-radius: 3px">
-                    <h3 class="box-title">Task menu</h3>
+                    <h3 class="box-title">Ticket menu</h3>
                     <div class="box-tools ">
                         <button type="button" class="btn btn-success" data-widget="collapse"><i class="fa fa-plus"></i></button>
                     </div>
                 </div>
                 <div class="box-body no-padding" style="display: none;">
                     @include('todolist::partial.navigation-edit')
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /. box -->
+
+            <div class="box box-solid">
+                <div class="box-header with-border bg-green-gradient" style="border-radius: 3px">
+                    <h3 class="box-title">Stato Ticket</h3>
+                    <div class="box-tools ">
+                        <button type="button" class="btn btn-success" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body no-padding">
+                    <table class="table table-bordered">
+                        <tbody><tr>
+                            <th style="width: 10px">#</th>
+                            <th>Data</th>
+                            <th style="width: 40px">Stato</th>
+                        </tr>
+                        @foreach($task->statuses as $status)
+                        <tr>
+                            <td>{{ $loop->iteration }}.</td>
+                            <td>{{ $status->pivot->created_at->format('d/m/Y') }}</td>
+                            <td>
+                                <span class="badge badge-info" style="background-color: {{ $status->color }};">{{ $status->name }}</span>
+                            </td>
+
+                        </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
                 </div>
                 <!-- /.box-body -->
             </div>

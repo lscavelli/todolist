@@ -1,6 +1,6 @@
 {!!
     $navigation->add([
-        'Assegnati a me e aperti'=>['icon'=>'fa-user','url'=>url('/admin/tasks/list/assign-to-me-open')],
+        'Assegnati a me e aperti'=>['icon'=>'fa-user','url'=>url('/admin/tasks')],
         'Assegnati ad altri e aperti'=>['icon'=>'fa-users','url'=>url('/admin/tasks/list/assign-to-other-open')],
         'Assegnati a me e chiusi'=>['icon'=>'fa-user','url'=>url('/admin/tasks/list/assign-to-me-closed')],
         'Assegnati ad altri e chiusi'=>['icon'=>'fa-users','url'=>url('/admin/tasks/list/assign-to-other-closed')],

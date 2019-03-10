@@ -17,6 +17,8 @@ use App\Services\position;
 use Illuminate\Support\Facades\Log;
 use Gate;
 use Lfgscavelli\Todolist\Http\Filters\TaskFilter;
+use Lfgscavelli\Todolist\Models\Status;
+
 
 class TaskController extends Controller
 {
@@ -96,7 +98,8 @@ class TaskController extends Controller
         // verifico i permessi di creazione del Task
         if (Gate::denies('tasks-create')) return redirect('/admin/tasks')->withErrorss('Non hai i permessi per questa funzione.');
         $task = new Task();
-        return view('todolist::edit')->with(compact('task'));
+        $stato = $this->rp->setModel(Status::class)->optionsSel();
+        return view('todolist::edit')->with(compact('task','stato'));
     }
 
     /**
@@ -112,7 +115,8 @@ class TaskController extends Controller
         $this->validator($data)->validate();
         $data = $this->iDate($data);
         $data['user_id'] = auth()->user()->id;
-        $this->rp->create($data);
+        $task = $this->rp->create($data);
+        $task->statuses()->attach($data['status_id']);
         return redirect('/admin/tasks')->withSuccess('Task creato correttamente.');
     }
 
@@ -144,7 +148,8 @@ class TaskController extends Controller
     public function edit($id)
     {
         $task = $this->rp->getModel()->filter($this->filter)->findOrFail($id);
-        return view('todolist::edit', compact('task'));
+        $stato = $this->rp->setModel(Status::class)->optionsSel();
+        return view('todolist::edit', compact('task','stato'));
     }
 
     public function categorization($id) {
@@ -164,11 +169,14 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->rp->getModel()->filter($this->filter)->findOrFail($id);
+        $task = $this->rp->getModel()->filter($this->filter)->findOrFail($id);
         $data = $request->all(); $data['id'] = $id;
         $this->validator($data,true)->validate();
         $data = $this->iDate($data);
         if ($this->rp->update($id,$data)) {
+            if($task->status_id!=$data['status_id']) {
+                $task->statuses()->attach($data['status_id']);
+            }
             return redirect('/admin/tasks')->withSuccess('Task modificato correttamente.');
         }
     }

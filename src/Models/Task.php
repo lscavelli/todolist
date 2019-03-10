@@ -26,7 +26,7 @@ class Task extends Model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function groups()    {
-        return $this->belongsToMany('App\Models\Group','tasks_groups');
+        return $this->belongsToMany('App\Models\Group','task_group');
     }
 
     /**
@@ -34,7 +34,7 @@ class Task extends Model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function users() {
-        return $this->belongsToMany('App\Models\User','tasks_users');
+        return $this->belongsToMany('App\Models\User','task_user');
     }
 
     /**
@@ -77,6 +77,14 @@ class Task extends Model
      */
     public function comments() {
         return $this->morphMany('App\Models\Content\Comment','commentable');
+    }
+
+    /**
+     * restituisce l'elenco degli stati dell'ordine
+     * @return mixed
+     */
+    public function statuses() {
+        return $this->belongsToMany(Status::class,'task_status')->withTimestamps();
     }
 
 }
