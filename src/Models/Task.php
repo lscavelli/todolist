@@ -68,7 +68,7 @@ class Task extends Model
      * @return mixed
      */
     public function files() {
-        return $this->belongsToMany(File::class);
+        return $this->belongsToMany(File::class,'task_file');
     }
 
     /**

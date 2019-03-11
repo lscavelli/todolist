@@ -25,9 +25,9 @@
                         {!! Form::model($task, ['url' => url('admin/tasks',$task->id),'class' => 'form-horizontal']) !!}
                             @if(isset($task->id))@method('PUT')@endif
                             {!! Form::slText('name','Nome') !!}
-                            {!! Form::slTextarea('description','Descrizione') !!}
+                            {!! Form::slCkeditor('description','Descrizione') !!}
                             {!! Form::slSelect('type','Tipo Task',['public'=>__('Pubblico'),'private'=>__('Privato')]) !!}
-                            {!! Form::slSelect('status_id','Stato',$stato) !!}
+                            {!! Form::slSelect('status_id','Stato',$stato,[],1) !!}
                             @if(is_array(config('todolist.priority'))){!! Form::slSelect('priority','Priorità',config('todolist.priority')) !!}@endif
                             {!! Form::slDate('date','Data',$task->date ?: Carbon\Carbon::now()) !!}
                             {!! Form::slSubmit('Salva') !!}

@@ -17,6 +17,10 @@ Route::group([
     function () {
 
         Route::get('tasks/comments/{task_id}/create','CommentController@create');
+        Route::post('tasks/comments/','CommentController@store');
+        Route::get('tasks/comments/{task_id}/{comment_id}/edit','CommentController@edit');
+        Route::delete('tasks/comments/{task_id}/{comment_id}','CommentController@destroy');
+        Route::post('tasks/comments/{comment_id}','CommentController@update');
 
         Route::get('tasks/list/{type?}', 'TaskController@index');
         Route::view('tasks/calendar', 'todolist::calendarAngular');

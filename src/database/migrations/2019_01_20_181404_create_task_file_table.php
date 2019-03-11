@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateFileTaskTable extends Migration
+class CreateTaskFileTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateFileTaskTable extends Migration
      */
     public function up()
     {
-        Schema::create('file_task', function (Blueprint $table) {
+        Schema::create('task_file', function (Blueprint $table) {
             $table->integer('file_id')->unsigned()->index();
             $table->foreign('file_id')->references('id')->on('files')->onDelete('cascade');
             $table->integer('task_id')->unsigned()->index();
@@ -30,6 +30,6 @@ class CreateFileTaskTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('file_task');
+        Schema::dropIfExists('task_file');
     }
 }

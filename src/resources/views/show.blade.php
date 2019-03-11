@@ -34,7 +34,7 @@
                     <div class="user-block">
                         <img class="img-circle" src="{{ $task->author->getAvatar() }}" alt="{{ $task->author->name }}">
                         <span class="username"><a href="{{ url('admin/users',$task->author->id) }}">{{ $task->author->name }}</a></span>
-                        <span class="description">Postato il - {{ Carbon\Carbon::parse($task->created_at)->format('d/m/Y') }} @if($task->created_at!=$task->updated_at) - Modificato il {{ Carbon\Carbon::parse($task->updated_at)->format('d/m/Y') }}@endif</span>
+                        <span class="description">Postato il - {{ $task->created_at->format('d/m/Y') }} @if($task->created_at!=$task->updated_at) - Modificato il {{ $task->updated_at->format('d/m/Y') }}@endif</span>
                     </div>
                     <!-- /.user-block -->
                     <div class="box-tools">
@@ -46,8 +46,8 @@
                 <!-- /.box-header -->
                 <div class="box-body">
                     <!-- post text -->
-                    <div class="col-md-9">
-                        {{ $task->description }}
+                    <div class="col-md-12">
+                        {!! $task->description !!}
                     </div>
                 </div>
                 <!-- /.box-body -->
@@ -78,7 +78,7 @@
                             {!!
                                 $comments->columns(['id','name'=>__('Nome')])
                                 ->setColorButton('default')
-                                ->setActionsUrl("admin\\tasks\\comments\\".$task->id)
+                                ->setActionsUrl("admin/tasks/comments/".$task->id)
                                 ->render()
                             !!}
                         @endif

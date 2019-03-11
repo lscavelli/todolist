@@ -64,7 +64,8 @@ class TaskController extends Controller
      * Visualizza la lista filtrata dei task
      * @return mixed
      */
-    public function index($type="assign-to-me-open", Request $request) {
+    public function index($type="assign-to-me-open", Request $request)
+    {
         if ($type=="assign-to-me-open") {
             $filter = ['assignToMe' => '1','open' => '1'];
         } elseif($type=='assign-to-me-closed') {

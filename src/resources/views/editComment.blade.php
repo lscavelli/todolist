@@ -23,11 +23,11 @@
                     <!-- /.tab-pane -->
                     <div class="tab-pane active" id="editpost">
 
-                        {!! Form::model($comment, ['url' => url('/admin/tasks/comments'),'class' => 'form-horizontal']) !!}
-                            <input type="hidden" value="{{ $task->id }}" name="id">
+                        {!! Form::model($comment, ['url' => url('/admin/tasks/comments',$comment->id),'class' => 'form-horizontal']) !!}
+                            <input type="hidden" value="{{ $task->id }}" name="task_id">
 
                             {!! Form::slText('name','Titolo',null,['placeholder'=> "Titolo non obbligatorio"]) !!}
-                            {!! Form::slTextarea('content','Contenuto') !!}
+                            {!! Form::slCkeditor('content','Contenuto') !!}
                             {!! Form::slSelect('approved','Stato',['Non Approvato','Approvato'],[],1) !!}
                             {!! Form::slSubmit('Salva') !!}
 
@@ -45,35 +45,4 @@
     </div>
     <!-- /.row -->
 </section>
-@stop
-
-@section('scripts')
-    {!! Html::script('node_modules/ckeditor/ckeditor.js') !!}
-
-    <script>
-
-        var config = {
-            extraPlugins: 'codesnippet',
-            codeSnippet_theme: 'sunburst',
-            language: '{{ config('app.locale') }}',
-            filebrowserImageBrowseUrl: '/lfm?type=Images',
-            filebrowserImageUploadUrl: '/lfm/upload?type=Images&_token=',
-            filebrowserBrowseUrl: '/lfm?type=Files',
-            filebrowserUploadUrl: '/lfm/upload?type=Files&_token=',
-            allowedContent: true,
-            extraAllowedContent: 'p(*)[*]{*};div(*)[*]{*};li(*)[*]{*};ul(*)[*]{*}',
-        };
-
-        // Set your configuration options below.
-
-        // Examples:
-        // config.language = 'pl';
-        // config.skin = 'jquery-mobile';
-
-        // CKFinder.define( configFinder );
-
-        config['height'] = 400;
-        CKEDITOR.replace('content', config);
-        CKEDITOR.dtd.$removeEmpty.i = 0;
-    </script>
 @stop
